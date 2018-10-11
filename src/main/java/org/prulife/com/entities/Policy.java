@@ -51,6 +51,7 @@ public class Policy {
     @ManyToOne
     private Users createdBy;
 
+    private String appNo;
 
     public Policy() {
 

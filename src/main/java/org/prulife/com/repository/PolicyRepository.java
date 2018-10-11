@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 @Component
 public interface PolicyRepository extends JpaRepository<Policy, Long> {
+    public Policy findTopByOrderByIdDesc();
 }

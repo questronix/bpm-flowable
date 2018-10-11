@@ -24,8 +24,7 @@ public class Users {
 
     private String lastName;
 
-    @NonNull
-    private String password;
+    private String ldapId;
 
     private String role;
 

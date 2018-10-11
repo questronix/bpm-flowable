@@ -4,19 +4,18 @@ import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
 import org.flowable.task.api.Task;
 
-import org.prulife.com.entities.Users;
 import org.prulife.com.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 @Service
 @Transactional
-public class DummyService {
+public class TasksService {
     @Autowired
     private RuntimeService runtimeService;
 
@@ -26,19 +25,18 @@ public class DummyService {
     @Autowired
     private UsersRepository userRepository;
 
-    public void startProcess() {
-        Users user = userRepository.findByUsername("kenster");
-        Map<String, Object> variables = new HashMap<String, Object>();
-        variables.put("users", user);
-        runtimeService.startProcessInstanceByKey("startCSA", variables);
+    public Task getTaskById(String tid, String username) {
+        Task task =  taskService.createTaskQuery().taskAssignee(username).taskId(tid).singleResult();
+        return task;
     }
 
-    public List<Task> getTasks(String assignee) {
-        return taskService.createTaskQuery().list();
+    public List<Task> getAllTasks(String username) {
+        return taskService.createTaskQuery().taskAssignee(username).list();
     }
 
-    public Users getUser(String username){
-        return userRepository.findByUsername(username);
+    public RuntimeService getRuntimeService(){
+        return runtimeService;
     }
+    public TaskService getTaskService() { return taskService; }
 
 }

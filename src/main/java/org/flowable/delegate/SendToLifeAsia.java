@@ -1,10 +1,12 @@
-package org.prulife.com.delegates;
+package org.flowable.delegate;
 
 import org.flowable.engine.delegate.DelegateExecution;
 import org.flowable.engine.delegate.JavaDelegate;
 
-public class External implements JavaDelegate {
+public class SendToLifeAsia implements JavaDelegate {
+
     public void execute(DelegateExecution execution) {
-        System.out.println("External is Called!");
+
+        System.out.println("Send to LifeAsia is Called!");
     }
 }

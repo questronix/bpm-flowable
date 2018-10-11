@@ -1,8 +1,11 @@
 package org.prulife.com.controller;
 
+import org.flowable.engine.HistoryService;
 import org.flowable.engine.RuntimeService;
 import org.flowable.task.api.Task;
 
+import org.flowable.task.api.history.HistoricTaskInstance;
+import org.flowable.task.api.history.HistoricTaskInstanceQuery;
 import org.prulife.com.entities.TaskObject;
 import org.prulife.com.entities.Users;
 import org.prulife.com.services.TasksService;
@@ -28,6 +31,10 @@ public class TasksController {
         List<TaskObject> list = new ArrayList<TaskObject>();
         for(Task task : tasks){
             list.add(new TaskObject(task, tasksService.getRuntimeService()));
+        }
+        List<HistoricTaskInstance> htasks = tasksService.getHistoryService().createHistoricTaskInstanceQuery().finished().list();
+        for(HistoricTaskInstance htask : htasks){
+            list.add(new TaskObject(htask, tasksService.getHistoryService()));
         }
 
         return list;

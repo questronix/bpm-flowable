@@ -1,5 +1,6 @@
 package org.prulife.com.services;
 
+import org.flowable.engine.HistoryService;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
 import org.flowable.task.api.Task;
@@ -23,6 +24,9 @@ public class TasksService {
     private TaskService taskService;
 
     @Autowired
+    private HistoryService historyService;
+
+    @Autowired
     private UsersRepository userRepository;
 
     public Task getTaskById(String tid, String username) {
@@ -38,5 +42,5 @@ public class TasksService {
         return runtimeService;
     }
     public TaskService getTaskService() { return taskService; }
-
+    public HistoryService getHistoryService() { return  historyService; }
 }

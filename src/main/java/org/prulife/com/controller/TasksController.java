@@ -6,6 +6,7 @@ import org.flowable.task.api.Task;
 
 import org.flowable.task.api.history.HistoricTaskInstance;
 import org.flowable.task.api.history.HistoricTaskInstanceQuery;
+import org.prulife.com.entities.Policy;
 import org.prulife.com.entities.TaskObject;
 import org.prulife.com.entities.Users;
 import org.prulife.com.services.TasksService;
@@ -49,11 +50,16 @@ public class TasksController {
 
     @PostMapping(value="/{tid}", produces= MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    TaskObject completeTask(@PathVariable("tid") String tid, @RequestParam("username") String username) {
-        Task task = tasksService.getTaskById(tid, username);
-        tasksService.getTaskService().complete(task.getId());
-        task = tasksService.getTaskById(tid, username);
-        return new TaskObject(task, tasksService.getRuntimeService());
+    TaskObject completeTask(@PathVariable("tid") String tid, @RequestParam("username") String username, @RequestBody Policy policy) {
+        Task task = tasksService.getTaskById(tid, username, policy);
+        String taskid = task.getId();
+        tasksService.getTaskService().complete(taskid);
+        HistoricTaskInstance htask = tasksService.getHistoryService()
+                .createHistoricTaskInstanceQuery()
+                .finished()
+                .taskId(taskid)
+                .singleResult();
+        return new TaskObject(htask, tasksService.getHistoryService());
     }
 
 }

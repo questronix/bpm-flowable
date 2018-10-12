@@ -20,12 +20,14 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/tasks")
+//@CrossOrigin(origins = "http://localhost:9000", maxAge = 3600)
 public class TasksController {
 
     @Autowired
     private TasksService tasksService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin
     public @ResponseBody
     List<TaskObject> getAllTasks(@RequestParam("username") String username) {
         List<Task> tasks = tasksService.getAllTasks(username);
@@ -42,6 +44,7 @@ public class TasksController {
     }
 
     @GetMapping(value="/{tid}", produces= MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin
     public @ResponseBody
     TaskObject getTask(@PathVariable("tid") String tid, @RequestParam("username") String username) {
         Task task = tasksService.getTaskById(tid, username);
@@ -49,6 +52,7 @@ public class TasksController {
     }
 
     @PostMapping(value="/{tid}", produces= MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin
     public @ResponseBody
     TaskObject completeTask(@PathVariable("tid") String tid, @RequestParam("username") String username, @RequestBody Policy policy) {
         Task task = tasksService.getTaskById(tid, username, policy);

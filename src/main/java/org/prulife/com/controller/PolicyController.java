@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:9000", maxAge = 3600)
 public class PolicyController {
     @Autowired
     private PolicyService policyService;
@@ -32,7 +33,6 @@ public class PolicyController {
     }
 
     @RequestMapping(value="/policy", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    @CrossOrigin
     public @ResponseBody Policy save(@RequestBody PolicyBody policyBody) {
         Users user = usersService.findById(policyBody.createdBy);
         Policy policy = new Policy();

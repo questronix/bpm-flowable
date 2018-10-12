@@ -11,12 +11,14 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/process")
+//@CrossOrigin(origins = "http://localhost:9000", maxAge = 3600)
 public class PController {
 
     @Autowired
     private PService processService;
 
     @PostMapping(value="/start", produces= MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin
     public @ResponseBody
     ProcessObject startProcessInstance(@RequestBody Map<String, String> req) {
         ProcessInstance pi = processService.startProcess(req.get("username"));

@@ -11,6 +11,12 @@ repositories {
     mavenCentral()
 }
 
+//jar{
+//    manifest{
+//        attributes 'Main-Class': 'org.prulife.com.Application'
+//    }
+//}
+
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
     {
@@ -23,6 +29,7 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.0.5.RELEASE'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-jetty', version: '2.0.5.RELEASE'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.0.5.RELEASE'
+    compile group: 'com.h2database', name: 'h2', version: '1.4.197'
 
 //    compile group: 'org.flowable', name: 'flowable-spring', version: '6.4.0'
 
@@ -33,7 +40,9 @@ dependencies {
     compile group: 'org.flowable', name: 'flowable-spring-boot-starter-jpa', version: '6.2.1'
 
 //    compile group: 'org.flowable', name: 'flowable-spring-boot-starter-process-rest', version: '6.4.0'
-    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.12'
+//    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.12'
+//    runtimeOnly('com.h2database:h2')
+//    testCompile group: 'com.h2database', name: 'h2', version: '1.4.197'
 
     compile 'org.projectlombok:lombok:1.18.2'
 }

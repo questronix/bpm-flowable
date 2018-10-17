@@ -1,12 +1,12 @@
-package org.flowable.delegate;
+package org.prulife.com.delegates;
 
 import org.flowable.engine.delegate.DelegateExecution;
 import org.flowable.engine.delegate.JavaDelegate;
 
-public class SendToLifeAsia implements JavaDelegate {
+public class ReferToUCorAML implements JavaDelegate {
 
+    @Override
     public void execute(DelegateExecution execution) {
-
-        System.out.println("Send to LifeAsia is Called!");
+        System.out.println("ReferToUCorAML is Called!");
     }
 }

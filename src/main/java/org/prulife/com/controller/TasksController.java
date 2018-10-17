@@ -1,5 +1,6 @@
 package org.prulife.com.controller;
 
+import lombok.Data;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.RuntimeService;
 import org.flowable.task.api.Task;
@@ -14,56 +15,45 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @RestController
 @RequestMapping(value = "/tasks")
-//@CrossOrigin(origins = "http://localhost:9000", maxAge = 3600)
 public class TasksController {
 
     @Autowired
     private TasksService tasksService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @CrossOrigin
     public @ResponseBody
-    List<TaskObject> getAllTasks(@RequestParam("username") String username) {
-        List<Task> tasks = tasksService.getAllTasks(username);
-        List<TaskObject> list = new ArrayList<TaskObject>();
-        for(Task task : tasks){
-            list.add(new TaskObject(task, tasksService.getRuntimeService()));
-        }
-        List<HistoricTaskInstance> htasks = tasksService.getHistoryService().createHistoricTaskInstanceQuery().finished().list();
-        for(HistoricTaskInstance htask : htasks){
-            list.add(new TaskObject(htask, tasksService.getHistoryService()));
-        }
-
-        return list;
+    List<TaskObject> getAllTasks(@RequestParam("uid") String uid){
+        return tasksService.getAllTasks(uid);
     }
 
-    @GetMapping(value="/{tid}", produces= MediaType.APPLICATION_JSON_VALUE)
-    @CrossOrigin
-    public @ResponseBody
-    TaskObject getTask(@PathVariable("tid") String tid, @RequestParam("username") String username) {
-        Task task = tasksService.getTaskById(tid, username);
-        return new TaskObject(task, tasksService.getRuntimeService());
+    @GetMapping(value = "/{tid}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody TaskObject getTaskById(@PathVariable("tid") String tid, @RequestParam("uid") String uid){
+        return tasksService.getTaskObjectById(tid, uid);
     }
 
-    @PostMapping(value="/{tid}", produces= MediaType.APPLICATION_JSON_VALUE)
-    @CrossOrigin
-    public @ResponseBody
-    TaskObject completeTask(@PathVariable("tid") String tid, @RequestParam("username") String username, @RequestBody Policy policy) {
-        Task task = tasksService.getTaskById(tid, username, policy);
-        String taskid = task.getId();
-        tasksService.getTaskService().complete(taskid);
-        HistoricTaskInstance htask = tasksService.getHistoryService()
-                .createHistoricTaskInstanceQuery()
-                .finished()
-                .taskId(taskid)
-                .singleResult();
-        return new TaskObject(htask, tasksService.getHistoryService());
+    @PostMapping(value = "/{tid}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody TaskObject completeTaskById(@PathVariable("tid") String tid,
+                                                     @RequestParam("uid") String uid,
+                                                     @RequestBody Map<String, Object> body) throws ParseException {
+        Task task = tasksService.getTaskById(tid, uid);
+        String type = (String) body.get("type");
+        if(type.toUpperCase().equals("CSA")){
+            String action = (String) body.get("action");
+            Policy policy = new Policy();
+            LinkedHashMap hash = (LinkedHashMap) body.get("policy");
+            policy.setId(((Number)hash.get("id")).longValue());
+            policy.setInfo((String) hash.get("info"));
+            policy.setNumber((String) hash.get("number"));
+            return tasksService.completeCSA(task, action, policy);
+        }
+        return tasksService.getTaskObjectById(tid, uid);
     }
 
 }

@@ -34,36 +34,9 @@ public class PolicyController {
     public @ResponseBody Policy save(@RequestBody PolicyBody policyBody) {
         Users user = usersService.findById(policyBody.createdBy);
         Policy policy = new Policy();
-        policy.setCreatedBy(user);
+        policy.setCreatedBy(user.getId());
         policy.setNumber(policyBody.number);
         policy.setInfo(policyBody.info);
-//        policy.setAgentCode(policyBody.agentCode);
-//        policy.setAgentName(policyBody.agentName);
-//        policy.setBranch(policyBody.branch);
-//        policy.setNma(policyBody.nma);
-//        policy.setPlanDesc(policyBody.planDesc);
-//        policy.setPlanCurrency(policyBody.planCurrency);
-//        policy.setContractStatus(policyBody.contractStatus);
-//        policy.setPremiumStatus(policyBody.premiumStatus);
-//        policy.setSumAssured(policyBody.sumAssured);
-//        policy.setRcd(policyBody.rcd);
-//        policy.setFirstIssueDate(policyBody.firstIssueDate);
-//        policy.setSalutation(policyBody.salutation);
-//        policy.setFirstName(policyBody.firstName);
-//        policy.setLastName(policyBody.lastName);
-//        policy.setGender(policyBody.gender);
-//        policy.setOccupation(policyBody.occupation);
-//        policy.setHrc(policyBody.hrc);
-//        policy.setVip(policyBody.vip);
-//        policy.setStr(policyBody.str);
-//        policy.setNationality(policyBody.nationality);
-//        policy.setDateOfBirth(policyBody.dateOfBirth);
-//        policy.setAttainedAge(policyBody.attainedAge);
-//        policy.setCivilStatus(policyBody.civilStatus);
-//        policy.setTelNumber(policyBody.telNumber);
-//        policy.setMobileNumber(policyBody.mobileNumber);
-//        policy.setTinOrSss(policyBody.tinOrSss);
-//        policy.setEmail(policyBody.tinOrSss);
 
         return policyService.save(policy);
     }

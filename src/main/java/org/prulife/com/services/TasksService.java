@@ -44,7 +44,6 @@ public class TasksService {
      * @return TaskObject
      */
     public TaskObject completeCSA(Task task, String action, Policy policy){
-//        TaskObject to = new TaskObject(task, runtimeService);
         String taskid = task.getId();
         if(action.toLowerCase().equals("complete")){
             Policy p = policyRepository.findById(policy.getId()).get();
@@ -71,6 +70,20 @@ public class TasksService {
 //            taskService.deleteTask(taskid); TODO:
         }
         return null;
+    }
+
+    /**
+     * Logic for complete Processor Task
+     * Upon completion it will assign new task to other user
+     *
+     * @param Task task
+     * @param String action
+     * @param Policy policy
+     * @return TaskObject
+     */
+    public TaskObject completeProcessor(Task task, String action, Policy policy) {
+        String taskid = task.getId();
+        return new TaskObject(task, runtimeService);
     }
 
     public Task getTaskById(String tid, String uid) {
@@ -105,4 +118,5 @@ public class TasksService {
     }
     public TaskService getTaskService() { return taskService; }
     public HistoryService getHistoryService() { return  historyService; }
+
 }

@@ -21,6 +21,7 @@ public class TaskObject {
     private String assignee;
     private String parentTaskId;
     private String processDefinitionId;
+    private String processInstanceId;
     private String executionId;
     private String category;
 
@@ -42,6 +43,7 @@ public class TaskObject {
         this.setAssignee(t.getAssignee());
         this.setParentTaskId(t.getParentTaskId());
         this.setProcessDefinitionId(t.getProcessDefinitionId());
+        this.setProcessInstanceId(t.getProcessInstanceId());
         this.setCategory(t.getCategory());
         this.setExecutionId(t.getExecutionId());
         Variables v = new Variables();
@@ -52,16 +54,16 @@ public class TaskObject {
             v.setPolicy((Policy) rs.getVariable(t.getProcessInstanceId(), "policy"));
         }
         if(rs.getVariable(t.getProcessInstanceId(), "appno") != null){
-            v.setAppno((String) rs.getVariable(t.getProcessInstanceId(), "appno"));
+            v.setAppno(rs.getVariable(t.getProcessInstanceId(), "appno").toString());
         }
         if(rs.getVariable(t.getProcessInstanceId(), "group") != null){
-            v.setGroup((String) rs.getVariable(t.getProcessInstanceId(), "group"));
+            v.setGroup(rs.getVariable(t.getProcessInstanceId(), "group").toString());
         }
         if(rs.getVariable(t.getProcessInstanceId(), "status") != null){
-            v.setStatus((String) rs.getVariable(t.getProcessInstanceId(), "status"));
+            v.setStatus(rs.getVariable(t.getProcessInstanceId(), "status").toString());
         }
-        if(rs.getVariable(t.getProcessInstanceId(), "username") != null){
-            v.setUsername(rs.getVariable(t.getProcessInstanceId(), "username").toString());
+        if(rs.getVariable(t.getProcessInstanceId(), "userid") != null){
+            v.setUsername(rs.getVariable(t.getProcessInstanceId(), "userid").toString());
         }
         this.setVariables(v);
         this.setStartTime(t.getCreateTime());
@@ -73,58 +75,29 @@ public class TaskObject {
         this.setCompleted(false);
     }
 
-    public TaskObject(Task t, TasksService ts){
-
+    public TaskObject(HistoricTaskInstance t, HistoryService hs){
         this.setId(t.getId());
         this.setName(t.getName());
         this.setAssignee(t.getAssignee());
         this.setParentTaskId(t.getParentTaskId());
         this.setProcessDefinitionId(t.getProcessDefinitionId());
+        this.setProcessInstanceId(t.getProcessInstanceId());
         this.setCategory(t.getCategory());
         this.setExecutionId(t.getExecutionId());
 
-
-        if(ts.getRuntimeService().getVariable(t.getProcessInstanceId(), "user") != null){
-            this.variables.setUser((Users) ts.getRuntimeService().getVariable(t.getProcessInstanceId(), "user"));
-        }
-        if(ts.getRuntimeService().getVariable(t.getProcessInstanceId(), "policy") != null){
-            this.variables.setPolicy((Policy) ts.getRuntimeService().getVariable(t.getProcessInstanceId(), "policy"));
-        }
-        if(ts.getRuntimeService().getVariable(t.getProcessInstanceId(), "appno") != null){
-            this.variables.setAppno((String) ts.getRuntimeService().getVariable(t.getProcessInstanceId(), "appno"));
-        }
-        if(ts.getRuntimeService().getVariable(t.getProcessInstanceId(), "group") != null){
-            this.variables.setGroup((String) ts.getRuntimeService().getVariable(t.getProcessInstanceId(), "group"));
-        }
-        if(ts.getRuntimeService().getVariable(t.getProcessInstanceId(), "status") != null){
-            this.variables.setGroup((String) ts.getRuntimeService().getVariable(t.getProcessInstanceId(), "status"));
-        }
-
-        this.setStartTime(t.getCreateTime());
-        this.setDueDate(t.getDueDate());
-        this.setEndTime(null);
-        this.setClaimTime(t.getClaimTime());
-
-        this.setSuspended(t.isSuspended());
-        this.setCompleted(false);
-    }
-
-    public TaskObject(HistoricTaskInstance t, TasksService ts){
-        this.setId(t.getId());
-        this.setStartTime(t.getCreateTime());
-        this.setAssignee(t.getAssignee());
-        this.setName(t.getName());
-        this.setProcessDefinitionId(t.getProcessDefinitionId());
-        List<HistoricVariableInstance> vars = ts.getHistoryService().createHistoricVariableInstanceQuery().processInstanceId(t.getProcessInstanceId()).list();
+        List<HistoricVariableInstance> vars = hs.createHistoricVariableInstanceQuery().processInstanceId(t.getProcessInstanceId()).list();
+        Variables v = new Variables();
         for(HistoricVariableInstance var : vars){
-            if(var.getVariableName().equals("user")) this.variables.setUser((Users) var.getValue());
-            if(var.getVariableName().equals("policy")) this.variables.setPolicy((Policy) var.getValue());
-            if(var.getVariableName().equals("appno")) this.variables.setAppno((String) var.getValue());
-            if(var.getVariableName().equals("group")) this.variables.setGroup((String) var.getValue());
-            if(var.getVariableName().equals("status")) this.variables.setStatus((String) var.getValue());
+            if(var.getVariableName().equals("user")) v.setUser((Users) var.getValue());
+            if(var.getVariableName().equals("policy")) v.setPolicy((Policy) var.getValue());
+            if(var.getVariableName().equals("appno")) v.setAppno(var.getValue().toString());
+            if(var.getVariableName().equals("group")) v.setGroup(var.getValue().toString());
+            if(var.getVariableName().equals("status")) v.setStatus(var.getValue().toString());
+            if(var.getVariableName().equals("userid")) v.setStatus(var.getValue().toString());
         }
+        this.setVariables(v);
+
         this.setSuspended(false);
-        this.setParentTaskId(t.getParentTaskId());
         this.setCompleted(true);
         this.setEndTime(t.getEndTime());
         this.setDueDate(t.getDueDate());

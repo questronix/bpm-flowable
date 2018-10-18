@@ -52,6 +52,14 @@ public class TasksController {
             policy.setInfo((String) hash.get("info"));
             policy.setNumber((String) hash.get("number"));
             return tasksService.completeCSA(task, action, policy);
+        }else if(type.toUpperCase().equals("PROCESSOR")){
+            String action = (String) body.get("action");
+            Policy policy = new Policy();
+            LinkedHashMap hash = (LinkedHashMap) body.get("policy");
+            policy.setId(((Number)hash.get("id")).longValue());
+            policy.setInfo((String) hash.get("info"));
+            policy.setNumber((String) hash.get("number"));
+            return tasksService.completeProcessor(task, action, policy);
         }
         return tasksService.getTaskObjectById(tid, uid);
     }

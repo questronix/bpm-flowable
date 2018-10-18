@@ -63,7 +63,7 @@ public class TaskObject {
             v.setStatus(rs.getVariable(t.getProcessInstanceId(), "status").toString());
         }
         if(rs.getVariable(t.getProcessInstanceId(), "userid") != null){
-            v.setUsername(rs.getVariable(t.getProcessInstanceId(), "userid").toString());
+            v.setUserid(rs.getVariable(t.getProcessInstanceId(), "userid").toString());
         }
         this.setVariables(v);
         this.setStartTime(t.getCreateTime());
@@ -107,7 +107,7 @@ public class TaskObject {
     @Data
     public class Variables{
         private Users user;
-        private String username;
+        private String userid;
         private Policy policy;
         private String appno;
         private String status;

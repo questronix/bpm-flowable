@@ -65,6 +65,9 @@ public class TaskObject {
         if(rs.getVariable(t.getProcessInstanceId(), "userid") != null){
             v.setUserid(rs.getVariable(t.getProcessInstanceId(), "userid").toString());
         }
+        if(rs.getVariable(t.getProcessInstanceId(), "processor-input") != null){
+            v.setProcessorInput(rs.getVariable(t.getProcessInstanceId(), "processor-input").toString());
+        }
         this.setVariables(v);
         this.setStartTime(t.getCreateTime());
         this.setDueDate(t.getDueDate());
@@ -93,12 +96,15 @@ public class TaskObject {
             if(var.getVariableName().equals("appno")) v.setAppno(var.getValue().toString());
             if(var.getVariableName().equals("group")) v.setGroup(var.getValue().toString());
             if(var.getVariableName().equals("status")) v.setStatus(var.getValue().toString());
-            if(var.getVariableName().equals("userid")) v.setStatus(var.getValue().toString());
+            if(var.getVariableName().equals("userid")) v.setUserid(var.getValue().toString());
+            if(var.getVariableName().equals("processor-input")) v.setProcessorInput(var.getValue().toString());
         }
         this.setVariables(v);
 
         this.setSuspended(false);
         this.setCompleted(true);
+        this.setStartTime(t.getStartTime());
+        this.setClaimTime(t.getClaimTime());
         this.setEndTime(t.getEndTime());
         this.setDueDate(t.getDueDate());
     }
@@ -112,5 +118,6 @@ public class TaskObject {
         private String appno;
         private String status;
         private String group;
+        private String processorInput;
     }
 }

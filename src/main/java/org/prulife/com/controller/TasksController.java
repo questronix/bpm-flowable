@@ -38,6 +38,35 @@ public class TasksController {
         return tasksService.getTaskObjectById(tid, uid);
     }
 
+    /**
+     * ----------------------------- GET HISTORY
+     */
+
+    @GetMapping(value = "/history", produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    List<TaskObject> getAllHistoryTasks(@RequestParam("uid") String uid){
+        return tasksService.getAllHistoryTasks(uid);
+    }
+
+    @GetMapping(value = "/history/{tid}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody TaskObject getHistoryTaskById(@PathVariable("tid") String tid, @RequestParam("uid") String uid){
+        return tasksService.getTaskObjectHistoryById(tid, uid);
+    }
+
+
+    /**
+     * ----------------------------- POST
+     */
+
+    @PostMapping(value = "/{tid}/claim", produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody TaskObject claimTaskById(@PathVariable("tid") String tid,
+                                                     @RequestParam("uid") String uid,
+                                                     @RequestBody Map<String, Object> body) throws ParseException {
+        Task task = tasksService.getTaskById(tid, uid);
+        String action = (String) body.get("action");
+        return tasksService.claimTask(task, action);
+    }
+
     @PostMapping(value = "/{tid}", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody TaskObject completeTaskById(@PathVariable("tid") String tid,
                                                      @RequestParam("uid") String uid,
@@ -46,20 +75,10 @@ public class TasksController {
         String type = (String) body.get("type");
         if(type.toUpperCase().equals("CSA")){
             String action = (String) body.get("action");
-            Policy policy = new Policy();
-            LinkedHashMap hash = (LinkedHashMap) body.get("policy");
-            policy.setId(((Number)hash.get("id")).longValue());
-            policy.setInfo((String) hash.get("info"));
-            policy.setNumber((String) hash.get("number"));
-            return tasksService.completeCSA(task, action, policy);
+            return tasksService.completeCSA(task, action, body);
         }else if(type.toUpperCase().equals("PROCESSOR")){
             String action = (String) body.get("action");
-            Policy policy = new Policy();
-            LinkedHashMap hash = (LinkedHashMap) body.get("policy");
-            policy.setId(((Number)hash.get("id")).longValue());
-            policy.setInfo((String) hash.get("info"));
-            policy.setNumber((String) hash.get("number"));
-            return tasksService.completeProcessor(task, action, policy);
+            return tasksService.completeProcessor(task, action, body);
         }
         return tasksService.getTaskObjectById(tid, uid);
     }

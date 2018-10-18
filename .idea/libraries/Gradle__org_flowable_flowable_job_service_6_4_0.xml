@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.flowable:flowable-job-service:6.4.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.flowable/flowable-job-service/6.4.0/5df9e59d12606e9eaa8d8dbf64c7a54882965ffd/flowable-job-service-6.4.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.flowable/flowable-job-service/6.4.0/2c6aa46140a11275d5ac371c8bbd27dfb9b1dd60/flowable-job-service-6.4.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

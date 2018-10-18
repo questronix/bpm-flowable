@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.flowable:flowable-idm-rest:6.4.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.flowable/flowable-idm-rest/6.4.0/75cec2de305a9f9fa70e64c9b0df5ad511a94448/flowable-idm-rest-6.4.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.flowable/flowable-idm-rest/6.4.0/f8192a4077a5b54ac1129a02e85d0101b653ad30/flowable-idm-rest-6.4.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

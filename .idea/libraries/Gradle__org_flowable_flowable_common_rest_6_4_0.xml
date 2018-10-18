@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.flowable:flowable-common-rest:6.4.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.flowable/flowable-common-rest/6.4.0/fb401bdd3de1acbe8de3bd01e07b3f59e222385e/flowable-common-rest-6.4.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.flowable/flowable-common-rest/6.4.0/8f7e8f76727e6f9b24202c7e6e9bcfd9e02f919e/flowable-common-rest-6.4.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

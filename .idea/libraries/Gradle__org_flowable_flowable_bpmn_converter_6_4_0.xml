@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.flowable:flowable-bpmn-converter:6.4.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.flowable/flowable-bpmn-converter/6.4.0/cd4799e075614505f86d1b4cda2f2ee76593fda/flowable-bpmn-converter-6.4.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.flowable/flowable-bpmn-converter/6.4.0/26972463eda2fdc50eb58d3e700f3188d8835545/flowable-bpmn-converter-6.4.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

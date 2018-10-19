@@ -17,6 +17,10 @@ public class UsersService {
         return usersRepository.findById(id).orElseThrow(() -> new RuntimeException("Can't find user id: " + id));
     }
 
+    public Users findByUsername(String username){
+        return usersRepository.findByUsername(username);
+    };
+
     public void createDemoUsers() {
         if(usersRepository.count()<1){
             usersRepository.save(createUser("admin", "Admin", "Admin", "0", "ADMIN"));

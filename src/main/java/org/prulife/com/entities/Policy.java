@@ -17,6 +17,7 @@ public class Policy {
     private String number;
     private String appNo;
     private String status;
+    @Column(columnDefinition = "TEXT")
     private String info;
 
     @CreationTimestamp

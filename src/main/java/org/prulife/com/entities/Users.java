@@ -3,6 +3,7 @@ package org.prulife.com.entities;
 
 import lombok.Data;
 import lombok.NonNull;
+import org.apache.ibatis.annotations.Many;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -26,7 +27,8 @@ public class Users {
 
     private String ldapId;
 
-    private String role;
+    @ManyToOne
+    private Role role;
 
     private int status = 1;
 

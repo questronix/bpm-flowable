@@ -69,7 +69,7 @@ public class TasksService {
             Task t = taskService.createTaskQuery().processInstanceId(task.getProcessInstanceId()).orderByTaskCreateTime().desc().singleResult();
             t.setParentTaskId(task.getId());
             t.setOwner(user.getUsername());
-            t.setCategory(user.getRole());
+            t.setCategory(user.getRole().getName());
             t.setAssignee(user.getId() + "");
             taskService.saveTask(t);
             policyRepository.save(p);

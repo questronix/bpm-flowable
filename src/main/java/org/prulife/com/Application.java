@@ -21,7 +21,7 @@ public class Application {
         return new CommandLineRunner() {
             @Override
             public void run(String... strings) throws Exception {
-                myService.createDemoUsers();
+//                myService.createDemoUsers();
             }
         };
     }

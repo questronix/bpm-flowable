@@ -3,13 +3,10 @@ package org.prulife.com.entities;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.Date;
 
-@Entity
+@Entity(name = "REF_User_Roles")
 @Data
 public class Role {
 
@@ -17,8 +14,14 @@ public class Role {
     @GeneratedValue
     private Long id;
 
-    private String name;
+    @Column(name = "ROLE_ID", nullable = true)
+    private String roleId;
+
+    @Column(name = "Description", nullable = true)
     private String description;
+
+    @Column(nullable = true)
+    private String name;
 
     @CreationTimestamp
     private Date createdAt;

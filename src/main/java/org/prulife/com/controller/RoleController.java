@@ -35,7 +35,7 @@ public class RoleController {
     public @ResponseBody
     Role updateRoleById(@PathVariable("id") Long id, @RequestBody Map<String, Object> body) throws ParseException{
         Role role = roleService.findById(id).orElse(null);
-        role.setName((String) body.get("name"));
+//        role.setName((String) body.get("name"));
         role.setDescription((String) body.get("description"));
 
         return roleService.save(role);
@@ -45,7 +45,7 @@ public class RoleController {
     public @ResponseBody
     Role create(@RequestBody Map<String, Object> body) throws ParseException{
         Role role = new Role();
-        role.setName((String) body.get("name"));
+//        role.setName((String) body.get("name"));
         role.setDescription((String) body.get("description"));
 
         return roleService.save(role);

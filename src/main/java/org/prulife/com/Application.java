@@ -1,6 +1,6 @@
 package org.prulife.com;
 
-import org.prulife.com.services.UsersService;
+import org.prulife.com.services.InitDataService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -16,12 +16,12 @@ public class Application {
     }
 
     @Bean
-    public CommandLineRunner init(final UsersService myService) {
+    public CommandLineRunner init(final InitDataService dataService) {
 
         return new CommandLineRunner() {
             @Override
             public void run(String... strings) throws Exception {
-//                myService.createDemoUsers();
+                dataService.init();
             }
         };
     }

@@ -20,9 +20,6 @@ public class Role {
     @Column(name = "Description", nullable = true)
     private String description;
 
-    @Column(nullable = true)
-    private String name;
-
     @CreationTimestamp
     private Date createdAt;
 }

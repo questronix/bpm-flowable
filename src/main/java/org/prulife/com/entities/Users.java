@@ -27,7 +27,7 @@ public class Users {
     private Role role;
 
     @Column(name = "Active", nullable = true)
-    private int status = 1;
+    private int isActive = 1;
 
     @Column(name = "Last_Login", nullable = true)
     private Date lastLogin;

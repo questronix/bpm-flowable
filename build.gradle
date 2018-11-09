@@ -10,43 +10,23 @@ sourceCompatibility = 1.8
 repositories {
     mavenCentral()
 }
-//
-//jar{
-//    manifest{
-//        attributes 'Mai n-Class': 'org.prulife.com.Application'
-//    }
-//}
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
     {
         exclude module: "spring-boot-starter-tomcat"
     }
+
     compile("org.springframework.boot:spring-boot-starter-jetty")
-
     testCompile group: 'junit', name: 'junit', version: '4.12'
-
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.0.5.RELEASE'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-jetty', version: '2.0.5.RELEASE'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.0.5.RELEASE'
-    compile group: 'com.h2database', name: 'h2', version: '1.4.197'
-
     compile group: 'org.flowable', name: 'flowable-spring', version: '6.4.0'
-
-//    compile group: 'org.flowable', name: 'flowable-spring-boot-starter-rest', version: '6.4.0'
     compile group: 'org.flowable', name: 'flowable-spring-boot-starter-basic', version: '6.4.0'
     compile group: 'org.flowable', name: 'flowable-spring-boot-starter-rest-api', version: '6.4.0'
     compile group: 'org.flowable', name: 'flowable-spring-boot-starter-actuator', version: '6.4.0'
     compile group: 'org.flowable', name: 'flowable-spring-boot-starter-jpa', version: '6.2.1'
-
-//    compile group: 'org.flowable', name: 'flowable-spring-boot-starter-process-rest', version: '6.4.0'
-    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.45'
-//    runtimeOnly('com.h2database:h2')
-//    testCompile group: 'com.h2database', name: 'h2', version: '1.4.197'
-
     compile 'org.projectlombok:lombok:1.18.2'
-
     compile group: 'com.microsoft.sqlserver', name: 'mssql-jdbc', version: '6.4.0.jre8'
-
-
 }

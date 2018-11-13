@@ -54,6 +54,12 @@ public class Users {
     @Column(name = "Modified_By", nullable = true, length = 20)
     private String updatedBy;
 
+    @Column(name = "Firstname", nullable = true)
+    private String firstName;
+
+    @Column(name = "Lastname", nullable = true)
+    private String lastName;
+
     public Users(){ }
 
 }

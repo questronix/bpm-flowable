@@ -33,14 +33,15 @@ public class PService {
     @Autowired
     private PolicyRepository policyRepository;
 
-    public TaskObject startProcess(String username) {
+    public TaskObject startProcess(String username, String info, String appNo) {
         //Search User
         Users user = userRepository.findByUsername(username);
 
         //assign it to policy
         Policy policy = new Policy();
         policy.setCreatedBy(user.getId());
-        policy.setAppNo(counter());
+        policy.setTransactionNo(appNo);
+        policy.setInfo(info);
         policy.setStatus("draft");
 
         //save the policy to DB
@@ -51,7 +52,7 @@ public class PService {
         variables.put("user", user);
         variables.put("policy", p);
         variables.put("userid", user.getId());
-        variables.put("appno", policy.getAppNo());
+        variables.put("transactionNumber", policy.getTransactionNo());
         variables.put("group", "csa");
         variables.put("status", "draft");
         ProcessInstance pi = runtimeService.startProcessInstanceByKey("startReinstatement", "Reinstatement", variables);

@@ -15,7 +15,7 @@ public class Policy {
 
     //PolicyRepository Information
     private String number;
-    private String appNo;
+    private String transactionNo;
     private String status;
     @Column(columnDefinition = "TEXT")
     private String info;

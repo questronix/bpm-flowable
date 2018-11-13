@@ -49,17 +49,19 @@ public class InitDataService {
         Role csa = roleRepository.findByDescription("CSA");
         Role processor = roleRepository.findByDescription("PROCESSOR");
 
-        usersRepository.save(this.createUser("mhackyu", csa, 1, "LA1"));
-        usersRepository.save(this.createUser("c68431", csa, 1, "LA2"));
-        usersRepository.save(this.createUser("jerome", processor, 1, "LA3"));
+        usersRepository.save(this.createUser("mhackyu", csa, 1, "LA1", "Mark Christian", "Paderes"));
+        usersRepository.save(this.createUser("c68431", csa, 1, "LA2", "Darawin", "A"));
+        usersRepository.save(this.createUser("jerome", processor, 1, "LA3", "Jerome", "Patiga"));
     }
 
-    private Users createUser(String username, Role role, int isActive, String LaUserId) {
+    private Users createUser(String username, Role role, int isActive, String LaUserId, String firstName, String lastName) {
         Users user = new Users();
         user.setUsername(username);
         user.setRole(role);
         user.setIsActive(1);
         user.setLaUserId(LaUserId);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
         return user;
     }
 }

@@ -13,7 +13,6 @@ public class Policy {
     @GeneratedValue
     private Long id;
 
-    //PolicyRepository Information
     private String number;
     private String transactionNo;
     private String status;

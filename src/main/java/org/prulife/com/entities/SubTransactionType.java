@@ -17,7 +17,8 @@ public class SubTransactionType {
 @Column(name = "SubTransactionType_Desc" , nullable = false)
     private String subTransactionTypeDesc;
 
-@ManyToOne
+    @ManyToOne
+    @JoinColumn()
     private TransactionType transactionType;
 
 

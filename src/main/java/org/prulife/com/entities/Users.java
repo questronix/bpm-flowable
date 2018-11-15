@@ -14,7 +14,7 @@ import java.util.Date;
 public class Users {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "User_ID")
     private Long id;
 
@@ -24,6 +24,7 @@ public class Users {
 
     @ManyToOne
 //    @Column(name = "Role_ID")
+    @JoinColumn(name="ROLE_ID", referencedColumnName = "ROLE_ID")
     private Role role;
 
     @Column(name = "Active", nullable = true)

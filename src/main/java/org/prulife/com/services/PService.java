@@ -49,7 +49,7 @@ public class PService {
 
         //set flowable variables
         Map<String, Object> variables = new HashMap<String, Object>();
-        variables.put("user", user);
+//        variables.put("user", user);
         variables.put("policy", p);
         variables.put("userid", user.getId());
         variables.put("transactionNumber", policy.getTransactionNo());

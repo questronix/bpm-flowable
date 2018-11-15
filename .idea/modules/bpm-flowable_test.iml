@@ -3,7 +3,10 @@
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
     <output-test url="file://$MODULE_DIR$/../../out/test/classes" />
     <exclude-output />
-    <content url="file://$MODULE_DIR$/../../src/test" />
+    <content url="file://$MODULE_DIR$/../../src/test">
+      <sourceFolder url="file://$MODULE_DIR$/../../src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../src/test/resources" type="java-test-resource" />
+    </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="bpm-flowable_main" />
@@ -12,11 +15,9 @@
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-jetty:2.0.5.RELEASE" level="project" />
     <orderEntry type="library" name="Gradle: org.flowable:flowable-spring-boot-starter-jpa:6.2.1" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-data-jpa:2.0.5.RELEASE" level="project" />
-    <orderEntry type="library" name="Gradle: com.h2database:h2:1.4.197" level="project" />
     <orderEntry type="library" name="Gradle: org.flowable:flowable-spring-boot-starter-actuator:6.4.0" level="project" />
     <orderEntry type="library" name="Gradle: org.flowable:flowable-spring-boot-starter-process:6.4.0" level="project" />
     <orderEntry type="library" name="Gradle: org.flowable:flowable-spring:6.4.0" level="project" />
-    <orderEntry type="library" name="Gradle: mysql:mysql-connector-java:5.1.45" level="project" />
     <orderEntry type="library" name="Gradle: org.projectlombok:lombok:1.18.2" level="project" />
     <orderEntry type="library" name="Gradle: com.microsoft.sqlserver:mssql-jdbc:6.4.0.jre8" level="project" />
     <orderEntry type="library" name="Gradle: junit:junit:4.12" level="project" />

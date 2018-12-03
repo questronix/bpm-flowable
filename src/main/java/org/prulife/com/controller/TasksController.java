@@ -23,8 +23,8 @@ public class TasksController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    List<TaskObject> getAllTasks(@RequestParam("uid") String uid){
-        return tasksService.getAllTasks(uid);
+    List<TaskObject> getAllTasks(@RequestParam("username") String username){
+        return tasksService.getAllTasks(username);
     }
 
     @RequestMapping(value = "/getTasksPerUser", method = RequestMethod.POST, produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -38,13 +38,13 @@ public class TasksController {
 
     @GetMapping(value="/paginated", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    Map<String, Object> getAllTasksPaginated(@RequestParam("uid") String uid, @RequestParam(name="offset", required = false) int offset, @RequestParam(name = "max", required = false) int max){
-        return tasksService.getAllTasks(uid, offset, max);
+    Map<String, Object> getAllTasksPaginated(@RequestParam("username") String username, @RequestParam(name="offset", required = false) int offset, @RequestParam(name = "max", required = false) int max){
+        return tasksService.getAllTasks(username, offset, max);
     }
 
     @GetMapping(value = "/{tid}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody TaskObject getTaskById(@PathVariable("tid") String tid, @RequestParam("uid") String uid){
-        return tasksService.getTaskObjectById(tid, uid);
+    public @ResponseBody TaskObject getTaskByUsername(@PathVariable("tid") String tid, @RequestParam("username") String username){
+        return tasksService.getTaskObjectByUsername(tid, username);
     }
 
     /**
@@ -53,13 +53,13 @@ public class TasksController {
 
     @GetMapping(value = "/history", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    List<TaskObject> getAllHistoryTasks(@RequestParam("uid") String uid){
-        return tasksService.getAllHistoryTasks(uid);
+    List<TaskObject> getAllHistoryTasks(@RequestParam("username") String username){
+        return tasksService.getAllHistoryTasks(username);
     }
 
     @GetMapping(value = "/history/{tid}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody TaskObject getHistoryTaskById(@PathVariable("tid") String tid, @RequestParam("uid") String uid){
-        return tasksService.getTaskObjectHistoryById(tid, uid);
+    public @ResponseBody TaskObject getHistoryTaskByUsername(@PathVariable("tid") String tid, @RequestParam("username") String username){
+        return tasksService.getTaskObjectHistoryByUsername(tid, username);
     }
 
 
@@ -70,10 +70,10 @@ public class TasksController {
      */
 
 //    @PostMapping(value = "/{tid}/claim", produces = MediaType.APPLICATION_JSON_VALUE)
-//    public @ResponseBody TaskObject claimTaskById(@PathVariable("tid") String tid,
-//                                                     @RequestParam("uid") String uid,
+//    public @ResponseBody TaskObject claimTaskByUsername(@PathVariable("tid") String tid,
+//                                                     @RequestParam("username") String username,
 //                                                     @RequestBody Map<String, Object> body) throws ParseException {
-//        Task task = tasksService.getTaskById(tid, uid);
+//        Task task = tasksService.getTaskByUsername(tid, username);
 //        String action = (String) body.get("action");
 //        return tasksService.claimTask(task, action);
 //    }
@@ -86,16 +86,16 @@ public class TasksController {
         String fromId = body.get("fromId").toString();
 //        String username =  body.get().toString();
         String action =  body.get("action").toString();
-        Task task = tasksService.getTaskById(id, fromId);
+        Task task = tasksService.getTaskByUsername(id, fromId);
 
         return tasksService.claimTask(task, fromId, toId, action);
     }
 
     @PostMapping(value = "/{tid}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody TaskObject completeTaskById(@PathVariable("tid") String tid,
-                                                     @RequestParam("uid") String uid,
+    public @ResponseBody TaskObject completeTaskByUsername(@PathVariable("tid") String tid,
+                                                     @RequestParam("username") String username,
                                                      @RequestBody Map<String, Object> body) throws ParseException {
-        Task task = tasksService.getTaskById(tid, uid);
+        Task task = tasksService.getTaskByUsername(tid, username);
         String type = (String) body.get("type");
         if(type.toUpperCase().equals("CSA")){
             String action = (String) body.get("action");
@@ -104,7 +104,7 @@ public class TasksController {
             String action = (String) body.get("action");
             return tasksService.completeProcessor(task, action, body);
         }
-        return tasksService.getTaskObjectById(tid, uid);
+        return tasksService.getTaskObjectByUsername(tid, username);
     }
 
 }

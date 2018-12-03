@@ -2,7 +2,7 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
   <process id="startReinstatement" name="Reinstatement" isExecutable="true">
     <startEvent id="flowStart" name="Start"></startEvent>
-    <userTask id="createPolicy" name="Pre-screening process" flowable:assignee="${userid}" flowable:candidateGroups="csa">
+    <userTask id="createPolicy" name="Pre-screening process" flowable:assignee="${Username}" flowable:candidateGroups="csa">
       <extensionElements>
         <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
       </extensionElements>
@@ -11,7 +11,7 @@
     <serviceTask id="sendEmail" name="Send Email notification" flowable:class="org.prulife.com.delegates.SendEmail"></serviceTask>
     <endEvent id="flowEnd" name="End"></endEvent>
     <serviceTask id="sendToLifeAsia" name="Send to data to Life Asia" flowable:class="org.prulife.com.delegates.SendToLifeAsia"></serviceTask>
-    <userTask id="evaluatePolicy" name="Processor Evaluation and Review" flowable:assignee="${userid}" flowable:candidateGroups="processor">
+    <userTask id="evaluatePolicy" name="Processor Evaluation and Review" flowable:assignee="${Username}" flowable:candidateGroups="processor">
       <extensionElements>
         <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
       </extensionElements>
@@ -47,7 +47,7 @@
         <omgdc:Bounds height="30.0" width="30.0" x="69.27989897092505" y="71.18659931395004"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="createPolicy" id="BPMNShape_createPolicy">
-        <omgdc:Bounds height="80.0" width="100.0" x="264.27989897092505" y="46.18659931395004"></omgdc:Bounds>
+        <omgdc:Bounds height="80.0" width="100.0" x="255.0" y="45.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="isCompleteAndValid" id="BPMNShape_isCompleteAndValid">
         <omgdc:Bounds height="40.0" width="40.0" x="504.27989897092505" y="66.18659931395004"></omgdc:Bounds>
@@ -80,16 +80,16 @@
         <omgdc:Bounds height="80.0" width="100.0" x="825.0" y="390.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="f10" id="BPMNEdge_f10">
-        <omgdi:waypoint x="679.8499471272851" y="430.45553266127007"></omgdi:waypoint>
-        <omgdi:waypoint x="824.9999999999643" y="430.11662933544164"></omgdi:waypoint>
+        <omgdi:waypoint x="680.3054053611675" y="430.0"></omgdi:waypoint>
+        <omgdi:waypoint x="825.0" y="430.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="f12" id="BPMNEdge_f12">
         <omgdi:waypoint x="875.0" y="469.95000000000005"></omgdi:waypoint>
         <omgdi:waypoint x="875.0" y="645.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="f11" id="BPMNEdge_f11">
-        <omgdi:waypoint x="660.8600505145374" y="449.44585520559923"></omgdi:waypoint>
-        <omgdi:waypoint x="660.8600505145374" y="659.0"></omgdi:waypoint>
+        <omgdi:waypoint x="660.3286544179871" y="449.91868239369114"></omgdi:waypoint>
+        <omgdi:waypoint x="660.0" y="659.0"></omgdi:waypoint>
         <omgdi:waypoint x="861.0" y="659.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="f13" id="BPMNEdge_f13">
@@ -97,17 +97,21 @@
         <omgdi:waypoint x="861.0" y="659.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="f1" id="BPMNEdge_f1">
-        <omgdi:waypoint x="99.22989862536068" y="86.18659931395004"></omgdi:waypoint>
-        <omgdi:waypoint x="264.27989897092505" y="86.18659931395004"></omgdi:waypoint>
+        <omgdi:waypoint x="99.22989685235724" y="86.18659931395004"></omgdi:waypoint>
+        <omgdi:waypoint x="177.13994948546252" y="86.18659931395004"></omgdi:waypoint>
+        <omgdi:waypoint x="177.13994948546252" y="85.0"></omgdi:waypoint>
+        <omgdi:waypoint x="254.99999999999898" y="85.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="f2" id="BPMNEdge_f2">
-        <omgdi:waypoint x="364.22989897082994" y="86.18659931395004"></omgdi:waypoint>
+        <omgdi:waypoint x="354.9499999999815" y="85.0"></omgdi:waypoint>
+        <omgdi:waypoint x="429.6399494854625" y="85.0"></omgdi:waypoint>
+        <omgdi:waypoint x="429.6399494854625" y="86.18659931395004"></omgdi:waypoint>
         <omgdi:waypoint x="504.27989897092505" y="86.18659931395004"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="f3" id="BPMNEdge_f3">
-        <omgdi:waypoint x="524.279898970925" y="106.12990078987224"></omgdi:waypoint>
-        <omgdi:waypoint x="524.279898970925" y="235.0"></omgdi:waypoint>
-        <omgdi:waypoint x="364.22989897077025" y="235.0"></omgdi:waypoint>
+        <omgdi:waypoint x="524.2423521500325" y="106.09914636010969"></omgdi:waypoint>
+        <omgdi:waypoint x="524.0" y="235.0"></omgdi:waypoint>
+        <omgdi:waypoint x="364.2298989708801" y="235.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="f4" id="BPMNEdge_f4">
         <omgdi:waypoint x="314.27989897092505" y="274.95000000000005"></omgdi:waypoint>
@@ -126,12 +130,12 @@
         <omgdi:waypoint x="450.0" y="430.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="f8" id="BPMNEdge_f8">
-        <omgdi:waypoint x="470.4583333333333" y="449.48738491889515"></omgdi:waypoint>
-        <omgdi:waypoint x="470.0874179431072" y="619.0"></omgdi:waypoint>
+        <omgdi:waypoint x="470.0" y="449.94564600611085"></omgdi:waypoint>
+        <omgdi:waypoint x="470.0" y="619.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="f9" id="BPMNEdge_f9">
-        <omgdi:waypoint x="489.4450252033809" y="430.5"></omgdi:waypoint>
-        <omgdi:waypoint x="640.8600505145374" y="430.5"></omgdi:waypoint>
+        <omgdi:waypoint x="489.9447626811827" y="430.0"></omgdi:waypoint>
+        <omgdi:waypoint x="640.3600505145374" y="430.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

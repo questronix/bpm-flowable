@@ -2,31 +2,25 @@ package org.prulife.com.entities;
 
 
 import lombok.Data;
-import lombok.NonNull;
-import org.apache.ibatis.annotations.Many;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Date;
 
 @Data
 @Entity(name = "Users")
-public class Users implements Serializable {
+public class Users {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "User_ID")
     private Long id;
 
-//    @NonNull
     @Column(name = "Username", unique=true, nullable = true)
     private String username;
 
-    @ManyToOne
-//    @Column(name = "Role_ID")
-    @JoinColumn(name="ROLE_ID", referencedColumnName = "ROLE_ID")
-    private Role role;
+    @Column(name="ROLE_ID", nullable = true)
+    private String role;
 
     @Column(name = "Active", nullable = true)
     private int isActive = 1;

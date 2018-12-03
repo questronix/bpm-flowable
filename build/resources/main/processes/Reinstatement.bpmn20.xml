@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
+  <process id="startReinstatement" name="Reinstatement" isExecutable="true">
+    <startEvent id="flowStart" name="Start"></startEvent>
+    <userTask id="createPolicy" name="Pre-screening process" flowable:assignee="${userid}" flowable:candidateGroups="csa">
+      <extensionElements>
+        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+      </extensionElements>
+    </userTask>
+    <exclusiveGateway id="isCompleteAndValid" name="Check" default="f5"></exclusiveGateway>
+    <serviceTask id="sendEmail" name="Send Email notification" flowable:class="org.prulife.com.delegates.SendEmail"></serviceTask>
+    <endEvent id="flowEnd" name="End"></endEvent>
+    <serviceTask id="sendToLifeAsia" name="Send to data to Life Asia" flowable:class="org.prulife.com.delegates.SendToLifeAsia"></serviceTask>
+    <userTask id="evaluatePolicy" name="Processor Evaluation and Review" flowable:assignee="${userid}" flowable:candidateGroups="processor">
+      <extensionElements>
+        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+      </extensionElements>
+    </userTask>
+    <exclusiveGateway id="toEndorse" name="to be endorsed?" default="f9"></exclusiveGateway>
+    <sequenceFlow id="f1" name="request" sourceRef="flowStart" targetRef="createPolicy"></sequenceFlow>
+    <sequenceFlow id="f6" name="end" sourceRef="sendEmail" targetRef="flowEnd"></sequenceFlow>
+    <exclusiveGateway id="beyondLimit" name="Beyond Authority?" default="f10"></exclusiveGateway>
+    <endEvent id="end" name="end"></endEvent>
+    <sequenceFlow id="f7" sourceRef="evaluatePolicy" targetRef="toEndorse"></sequenceFlow>
+    <sequenceFlow id="f4" name="create task" sourceRef="sendToLifeAsia" targetRef="evaluatePolicy"></sequenceFlow>
+    <sequenceFlow id="f13" name="assign to uc or aml" sourceRef="referToUCorAML" targetRef="end"></sequenceFlow>
+    <sequenceFlow id="f12" name="end" sourceRef="processorApproval" targetRef="end"></sequenceFlow>
+    <sequenceFlow id="f2" name="check" sourceRef="createPolicy" targetRef="isCompleteAndValid"></sequenceFlow>
+    <sequenceFlow id="f5" name="!valid or !complete" sourceRef="isCompleteAndValid" targetRef="sendEmail"></sequenceFlow>
+    <sequenceFlow id="f3" name="valid &amp; complete" sourceRef="isCompleteAndValid" targetRef="sendToLifeAsia">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${isCompleteAndValid == true}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="f10" name="no" sourceRef="beyondLimit" targetRef="processorApproval"></sequenceFlow>
+    <serviceTask id="referToUCorAML" name="Refer to UC or AML" flowable:class="org.prulife.com.delegates.ReferToUCorAML"></serviceTask>
+    <serviceTask id="processorApproval" name="Set Approval" flowable:class="org.prulife.com.delegates.SetProcessApproval"></serviceTask>
+    <sequenceFlow id="f11" name="yes (pass to asm)" sourceRef="beyondLimit" targetRef="end">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${beyondAuthority==true}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="f9" name="no hit" sourceRef="toEndorse" targetRef="beyondLimit"></sequenceFlow>
+    <sequenceFlow id="f8" name="hit" sourceRef="toEndorse" targetRef="referToUCorAML">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${hit==true}]]></conditionExpression>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_startReinstatement">
+    <bpmndi:BPMNPlane bpmnElement="startReinstatement" id="BPMNPlane_startReinstatement">
+      <bpmndi:BPMNShape bpmnElement="flowStart" id="BPMNShape_flowStart">
+        <omgdc:Bounds height="30.0" width="30.0" x="69.27989897092505" y="71.18659931395004"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="createPolicy" id="BPMNShape_createPolicy">
+        <omgdc:Bounds height="80.0" width="100.0" x="264.27989897092505" y="46.18659931395004"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="isCompleteAndValid" id="BPMNShape_isCompleteAndValid">
+        <omgdc:Bounds height="40.0" width="40.0" x="504.27989897092505" y="66.18659931395004"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sendEmail" id="BPMNShape_sendEmail">
+        <omgdc:Bounds height="80.0" width="100.0" x="744.279898970925" y="46.18659931395004"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="flowEnd" id="BPMNShape_flowEnd">
+        <omgdc:Bounds height="28.0" width="28.0" x="946.8252859359757" y="72.18659931395004"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sendToLifeAsia" id="BPMNShape_sendToLifeAsia">
+        <omgdc:Bounds height="80.0" width="100.0" x="264.27989897092505" y="195.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="evaluatePolicy" id="BPMNShape_evaluatePolicy">
+        <omgdc:Bounds height="80.0" width="100.0" x="264.27989897092505" y="390.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="toEndorse" id="BPMNShape_toEndorse">
+        <omgdc:Bounds height="40.0" width="40.0" x="450.0" y="410.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="beyondLimit" id="BPMNShape_beyondLimit">
+        <omgdc:Bounds height="40.0" width="40.0" x="640.3600505145374" y="410.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="end" id="BPMNShape_end">
+        <omgdc:Bounds height="28.0" width="28.0" x="861.0" y="645.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="referToUCorAML" id="BPMNShape_referToUCorAML">
+        <omgdc:Bounds height="80.0" width="100.0" x="420.0" y="619.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="processorApproval" id="BPMNShape_processorApproval">
+        <omgdc:Bounds height="80.0" width="100.0" x="825.0" y="390.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="f10" id="BPMNEdge_f10">
+        <omgdi:waypoint x="679.8499471272851" y="430.45553266127007"></omgdi:waypoint>
+        <omgdi:waypoint x="824.9999999999643" y="430.11662933544164"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="f12" id="BPMNEdge_f12">
+        <omgdi:waypoint x="875.0" y="469.95000000000005"></omgdi:waypoint>
+        <omgdi:waypoint x="875.0" y="645.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="f11" id="BPMNEdge_f11">
+        <omgdi:waypoint x="660.8600505145374" y="449.44585520559923"></omgdi:waypoint>
+        <omgdi:waypoint x="660.8600505145374" y="659.0"></omgdi:waypoint>
+        <omgdi:waypoint x="861.0" y="659.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="f13" id="BPMNEdge_f13">
+        <omgdi:waypoint x="519.95" y="659.0"></omgdi:waypoint>
+        <omgdi:waypoint x="861.0" y="659.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="f1" id="BPMNEdge_f1">
+        <omgdi:waypoint x="99.22989862536068" y="86.18659931395004"></omgdi:waypoint>
+        <omgdi:waypoint x="264.27989897092505" y="86.18659931395004"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="f2" id="BPMNEdge_f2">
+        <omgdi:waypoint x="364.22989897082994" y="86.18659931395004"></omgdi:waypoint>
+        <omgdi:waypoint x="504.27989897092505" y="86.18659931395004"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="f3" id="BPMNEdge_f3">
+        <omgdi:waypoint x="524.279898970925" y="106.12990078987224"></omgdi:waypoint>
+        <omgdi:waypoint x="524.279898970925" y="235.0"></omgdi:waypoint>
+        <omgdi:waypoint x="364.22989897077025" y="235.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="f4" id="BPMNEdge_f4">
+        <omgdi:waypoint x="314.27989897092505" y="274.95000000000005"></omgdi:waypoint>
+        <omgdi:waypoint x="314.27989897092505" y="390.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="f5" id="BPMNEdge_f5">
+        <omgdi:waypoint x="544.2262058942867" y="86.18659931395004"></omgdi:waypoint>
+        <omgdi:waypoint x="744.279898970925" y="86.18659931395004"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="f6" id="BPMNEdge_f6">
+        <omgdi:waypoint x="844.229898970925" y="86.18659931395004"></omgdi:waypoint>
+        <omgdi:waypoint x="946.8252859359757" y="86.18659931395004"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="f7" id="BPMNEdge_f7">
+        <omgdi:waypoint x="364.22989897084875" y="430.0"></omgdi:waypoint>
+        <omgdi:waypoint x="450.0" y="430.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="f8" id="BPMNEdge_f8">
+        <omgdi:waypoint x="470.4583333333333" y="449.48738491889515"></omgdi:waypoint>
+        <omgdi:waypoint x="470.0874179431072" y="619.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="f9" id="BPMNEdge_f9">
+        <omgdi:waypoint x="489.4450252033809" y="430.5"></omgdi:waypoint>
+        <omgdi:waypoint x="640.8600505145374" y="430.5"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

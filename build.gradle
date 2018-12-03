@@ -1,3 +1,4 @@
+
 plugins {
     id 'java'
 }
@@ -10,6 +11,14 @@ sourceCompatibility = 1.8
 repositories {
     mavenCentral()
 }
+
+//jar{
+//    manifest{
+//        attributes{
+//            'Main-class': ''
+//        }
+//    }
+//}
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")

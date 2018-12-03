@@ -51,7 +51,7 @@ public class InitDataService {
 
         usersRepository.save(this.createUser("mhackyu", csa, 1, "LA1", "Mark Christian", "Paderes"));
         usersRepository.save(this.createUser("c68431", csa, 1, "LA2", "Darawin", "A"));
-        usersRepository.save(this.createUser("jerome", processor, 1, "LA3", "Jerome", "Patiga"));
+        usersRepository.save(this.createUser("jerome", processor, 1, "LA4", "Jerome", "Patiga"));
     }
 
     private Users createUser(String username, Role role, int isActive, String LaUserId, String firstName, String lastName) {

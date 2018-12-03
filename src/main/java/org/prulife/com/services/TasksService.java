@@ -167,7 +167,13 @@ public class TasksService {
      * @return List<TaskObject>
      */
     public List<TaskObject> getAllTasks(String uid) {
-        List<Task> tasks = taskService.createTaskQuery().taskAssignee(uid).orderByTaskCreateTime().desc().list();
+        int page = 2;
+        int item = 2;
+        page = (page -1) * item;
+//        List<Task> tasks = taskService.createTaskQuery().taskAssignee(uid).orderByTaskCreateTime().desc().list();
+        List<Task> tasks = taskService.createTaskQuery().taskAssignee(uid).orderByTaskCreateTime().desc().listPage(page, item);
+//        List<Task> tasks = taskService.createTaskQuery().taskAssignee(uid).orderByTaskCreateTime().count();
+
         List<TaskObject> list = new ArrayList<TaskObject>();
         for(Task task : tasks){
             list.add(new TaskObject(task, runtimeService));

@@ -32,38 +32,69 @@ public class TasksService {
      * Completes the task of CSA
      * Upon completion it will create new task for Processor's evaluation
      *
-     * @param task Task object
-     * @param action String action
      * @param body Map Request Body
      * @return TaskObject
      */
-    public TaskObject completeCSA(Task task, String action, Map<String, Object> body){
-        String taskid = task.getId();
-        if(action.toLowerCase().equals("complete")){
+    public Boolean completeCSAPrescreening(String taskId, Map<String, Object> body){
+        try{
+            Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
 
-//            Users user = userRepository.findByUsername("jerome");
+            ResponseModel responseModel = new ResponseModel();
             runtimeService.setVariable(task.getExecutionId(), "status", "processor");
-            runtimeService.setVariable(task.getExecutionId(), "isBeyondLimit", body.get("isBeyondLimit"));
-            runtimeService.setVariable(task.getExecutionId(), "isBeyondLimit", body.get("isBeyondLimit"));
-            runtimeService.setVariable(task.getExecutionId(), "isSOI", body.get("isSOI"));
-            runtimeService.setVariable(task.getExecutionId(), "isFatcaTagging", body.get("isFatcaTagging"));
-            runtimeService.setVariable(task.getExecutionId(), "isWithOccupationChange", body.get("isWithOccupationChange"));
-            runtimeService.setVariable(task.getExecutionId(), "isPlaceOfSigningWithinPh", body.get("isPlaceOfSigningWithinPh"));
+            runtimeService.setVariable(task.getExecutionId(), "beyondLimit", body.get("beyondLimit"));
+            runtimeService.setVariable(task.getExecutionId(), "hrcStr", body.get("hrcStr"));
+            runtimeService.setVariable(task.getExecutionId(), "cia", body.get("cia"));
+            runtimeService.setVariable(task.getExecutionId(), "cio", body.get("cio"));
+            runtimeService.setVariable(task.getExecutionId(), "soi", body.get("soi"));
+            runtimeService.setVariable(task.getExecutionId(), "fatca", body.get("fatca"));
             runtimeService.setVariable(task.getExecutionId(), "modules", "processor");
-            runtimeService.setVariable(task.getExecutionId(), "screener", "darwinc");
-            taskService.complete(taskid);
+            runtimeService.setVariable(task.getExecutionId(), "radcaa", body.get("radcaa"));
+            runtimeService.setVariable(task.getExecutionId(), "pos", body.get("pos"));
+
+            taskService.complete(task.getId());
             Task t = taskService.createTaskQuery().processInstanceId(task.getProcessInstanceId()).orderByTaskCreateTime().desc().singleResult();
             t.setParentTaskId(task.getId());
-//            t.setOwner((String) body.get("username"));
-//            t.setAssignee((String) body.get("username"));
-            t.setCategory("processor");
             taskService.saveTask(t);
-            return new TaskObject(t, runtimeService);
-        }else if(action.toLowerCase().equals("delete")){
-//            taskService.deleteTask(taskid); TODO:
+            return true;
+         }
+        catch (Exception ex){
+            return  false;
         }
-        return null;
     }
+
+    public Boolean completeCsaProcessing(String taskId){
+        try{
+            Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+            taskService.complete(task.getId());
+//            Task t = taskService.createTaskQuery().processInstanceId(task.getProcessInstanceId()).orderByTaskCreateTime().desc().singleResult();
+//            t.setParentTaskId(task.getId());
+//            taskService.saveTask(t);
+            return true;
+        }
+        catch (Exception ex){
+            return  false;
+        }
+    }
+
+    public Boolean completeCsaApproval(String taskId, Map<String, Object> body){
+        try{
+            Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+            runtimeService.setVariable(task.getExecutionId(), "isApprove", body.get("isApprove"));
+            runtimeService.setVariable(task.getExecutionId(), "remarks", body.get("remarks"));
+
+            taskService.complete(task.getId());
+//            Task t = taskService.createTaskQuery().processInstanceId(task.getProcessInstanceId()).orderByTaskCreateTime().desc().singleResult();
+//            t.setParentTaskId(task.getId());
+//            taskService.complete(t.getId());
+//            taskService.saveTask(t);
+            return true;
+        }
+        catch (Exception ex){
+            return  false;
+        }
+    }
+
+
 
 //    public TaskObject getTaskByExcutionID (String excusionID) {
 //        ProcessInstance =  runtimeService.createProcessInstanceQuery()

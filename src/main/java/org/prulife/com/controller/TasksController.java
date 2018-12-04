@@ -92,19 +92,73 @@ public class TasksController {
     }
 
     @PostMapping(value = "/{tid}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody TaskObject completeTaskByUsername(@PathVariable("tid") String tid,
-                                                     @RequestParam("username") String username,
-                                                     @RequestBody Map<String, Object> body) throws ParseException {
-        Task task = tasksService.getTaskByUsername(tid, username);
-        String type = (String) body.get("type");
-        if(type.toUpperCase().equals("CSA")){
-            String action = (String) body.get("action");
-            return tasksService.completeCSA(task, action, body);
-        }else if(type.toUpperCase().equals("PROCESSOR")){
-            String action = (String) body.get("action");
-            return tasksService.completeProcessor(task, action, body);
+    public @ResponseBody ResponseModel completeTaskByUsername(@RequestBody Map<String, Object> body) throws ParseException {
+        ResponseModel responseModel = new ResponseModel();
+
+        if (tasksService.completeCSAPrescreening(body.get("taskId").toString(), body)) {
+            responseModel.setMessage("Success");
+            responseModel.setStatus("200");
+            responseModel.setSuccess(true);
         }
-        return tasksService.getTaskObjectByUsername(tid, username);
+        else {
+            responseModel.setMessage("Failed");
+            responseModel.setStatus("201");
+            responseModel.setSuccess(false);
+        }
+        return responseModel;
     }
+
+    @PostMapping(value = "/completePrescreening", produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody ResponseModel completePrescreening(@RequestBody Map<String, Object> body) throws ParseException {
+        ResponseModel responseModel = new ResponseModel();
+
+        if (tasksService.completeCSAPrescreening(body.get("taskId").toString(), body)) {
+            responseModel.setMessage("Success");
+            responseModel.setStatus("200");
+            responseModel.setSuccess(true);
+        }
+        else {
+            responseModel.setMessage("Failed");
+            responseModel.setStatus("201");
+            responseModel.setSuccess(false);
+        }
+        return responseModel;
+    }
+
+    @PostMapping(value = "/completeCsaProcessing", produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody ResponseModel completeCsaProcessing(@RequestBody Map<String, Object> body) throws ParseException {
+        ResponseModel responseModel = new ResponseModel();
+
+        if (tasksService.completeCsaProcessing(body.get("taskId").toString())) {
+            responseModel.setMessage("Success");
+            responseModel.setStatus("200");
+            responseModel.setSuccess(true);
+        }
+        else {
+            responseModel.setMessage("Failed");
+            responseModel.setStatus("201");
+            responseModel.setSuccess(false);
+        }
+        return responseModel;
+    }
+
+    @PostMapping(value = "/completeCsaApproval", produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody ResponseModel completeCsaApproval(@RequestBody Map<String, Object> body) throws ParseException {
+        ResponseModel responseModel = new ResponseModel();
+
+      if (tasksService.completeCsaApproval(body.get("taskId").toString(), body)) {
+            responseModel.setMessage("Success");
+            responseModel.setStatus("200");
+            responseModel.setSuccess(true);
+        }
+        else {
+            responseModel.setMessage("Failed");
+            responseModel.setStatus("201");
+            responseModel.setSuccess(false);
+        }
+        return responseModel;
+    }
+
+
 
 }

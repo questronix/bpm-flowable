@@ -9,8 +9,8 @@ public class Assignment {
         return username;
     }
 
-    public String assignCsaProcessor(String username) {
-        return username;
+    public String assignCsaProcessor(String prescreener) {
+        return prescreener;
     }
 
     public String assignCsaApprover(String unitHead) {

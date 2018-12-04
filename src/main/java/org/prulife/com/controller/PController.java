@@ -20,7 +20,7 @@ public class PController {
     @CrossOrigin
     public @ResponseBody
     TaskObject startProcessInstance(@RequestBody Map<String, String> req) {
-        TaskObject to = processService.startProcess(req.get("username"), req.get("transactionNo"), req.get("policyNo"));
+        TaskObject to = processService.startProcess(req.get("prescreener"), req.get("transactionNo"), req.get("policyNo"), req.get("unitHead"));
         return to;
     }
 

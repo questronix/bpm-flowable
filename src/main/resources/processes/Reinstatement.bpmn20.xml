@@ -2,14 +2,12 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
   <process id="reinstatementStart" name="Reinstatement" isExecutable="true">
     <startEvent id="flowStart" name="Start"></startEvent>
-    <userTask id="csaPrescreening" name="CSA Pre-screening" flowable:assignee="${TaskAssignment.assignCsaPrescreener(username)}" flowable:candidateGroups="csa">
-      <extensionElements>
-        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
-      </extensionElements>
+    <userTask id="csaPrescreening" name="CSA Pre-screening" flowable:assignee="${prescreener}" flowable:candidateGroups="csa">
+
     </userTask>
     <exclusiveGateway id="firstValidation" name="1st level validation" default="f5"></exclusiveGateway>
     <endEvent id="flowEnd" name="End"></endEvent>
-    <userTask id="csaProcessing" name="CSA Processing " flowable:assignee="${TaskAssignment.assignCsaProcessor(username)}" flowable:candidateGroups="csa">
+    <userTask id="csaProcessing" name="CSA Processing " flowable:assignee="${TaskAssignment.assignCsaProcessor(prescreener)}" >
       <extensionElements>
         <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
       </extensionElements>
@@ -23,17 +21,17 @@
     <sequenceFlow id="f2" name="validate" sourceRef="csaPrescreening" targetRef="firstValidation"></sequenceFlow>
     <sequenceFlow id="f1" name="request" sourceRef="flowStart" targetRef="csaPrescreening"></sequenceFlow>
     <sequenceFlow id="f6" sourceRef="asmProcessing" targetRef="sid-737861F6-FDE5-4226-9572-28FB9A403FF3"></sequenceFlow>
-    <sequenceFlow id="f5" name="1st validation failed" sourceRef="firstValidation" targetRef="asmProcessing"></sequenceFlow>
-    <sequenceFlow id="f3" name="1st validation passed" sourceRef="firstValidation" targetRef="csaProcessing">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${isBeyondLimit == false || isSOI == false || isFatcaTagging == false || isWithOccupationChange == false || isPlaceOfSigningWithinPh == true }]]></conditionExpression>
-    </sequenceFlow>
     <userTask id="csaApproval" name="CSA Approval" flowable:assignee="${TaskAssignment.assignCsaApprover(unitHead)}" flowable:candidateGroups="csa">
       <extensionElements>
         <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
       </extensionElements>
     </userTask>
-    <sequenceFlow id="f4" sourceRef="csaProcessing" targetRef="csaApproval"></sequenceFlow>
     <sequenceFlow id="sid-75075CEA-685E-4A51-B356-7D8F8DFB1E60" sourceRef="csaApproval" targetRef="flowEnd"></sequenceFlow>
+    <sequenceFlow id="f4" sourceRef="csaProcessing" targetRef="csaApproval"></sequenceFlow>
+    <sequenceFlow id="f5" name="1st validation failed" sourceRef="firstValidation" targetRef="asmProcessing"></sequenceFlow>
+    <sequenceFlow id="f3" name="1st validation passed" sourceRef="firstValidation" targetRef="csaProcessing">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${beyondLimit == false && hrcStr == false && cia == false && cio == false && soi == false && fatca == false && radcaa == false && pos == true }]]></conditionExpression>
+    </sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_reinstatementStart">
     <bpmndi:BPMNPlane bpmnElement="reinstatementStart" id="BPMNPlane_reinstatementStart">

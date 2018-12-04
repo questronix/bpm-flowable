@@ -21,20 +21,21 @@ public class PService {
     @Autowired
     private TaskService taskService;
 
-    public TaskObject startProcess(String username, String transactionNo, String policyNo) {
+    public TaskObject startProcess(String prescreener, String transactionNo, String policyNo, String unitHead) {
         //set flowable variables
         Map<String, Object> variables = new HashMap<String, Object>();
         variables.put("transactionNo", transactionNo);
         variables.put("policyNo", policyNo);
         variables.put("modules", "csa");
         variables.put("status", "draft");
-        variables.put("username", username);
+        variables.put("prescreener", prescreener);
+        variables.put("unitHead", unitHead);
         ProcessInstance pi = runtimeService.startProcessInstanceByKey("reinstatementStart", "Reinstatement", variables);
-        Task to = taskService.createTaskQuery().processInstanceId(pi.getId()).taskAssignee(username).orderByTaskCreateTime().desc().singleResult();
+        Task to = taskService.createTaskQuery().processInstanceId(pi.getId()).taskAssignee(prescreener).orderByTaskCreateTime().desc().singleResult();
 //        to.setOwner(username);
 //        to.setCategory("csa");
         taskService.saveTask(to);
-        to = taskService.createTaskQuery().processInstanceId(pi.getId()).taskAssignee(username).orderByTaskCreateTime().desc().singleResult();
+        to = taskService.createTaskQuery().processInstanceId(pi.getId()).taskAssignee(prescreener).orderByTaskCreateTime().desc().singleResult();
         return new TaskObject(to, runtimeService);
     }
 

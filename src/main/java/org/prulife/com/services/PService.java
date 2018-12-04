@@ -22,22 +22,17 @@ public class PService {
     private TaskService taskService;
 
     public TaskObject startProcess(String username, String transactionNo, String policyNo) {
-        //Search User
-//        Users user = userRepository.findByUsername(username);
-//        System.out.println(user);
-
         //set flowable variables
         Map<String, Object> variables = new HashMap<String, Object>();
         variables.put("transactionNo", transactionNo);
         variables.put("policyNo", policyNo);
         variables.put("modules", "csa");
         variables.put("status", "draft");
-        variables.put("Username", username);
-//        variables.put("userid", userId);
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey("startReinstatement", "Reinstatement", variables);
+        variables.put("username", username);
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("reinstatementStart", "Reinstatement", variables);
         Task to = taskService.createTaskQuery().processInstanceId(pi.getId()).taskAssignee(username).orderByTaskCreateTime().desc().singleResult();
-        to.setOwner(username);
-        to.setCategory("csa");
+//        to.setOwner(username);
+//        to.setCategory("csa");
         taskService.saveTask(to);
         to = taskService.createTaskQuery().processInstanceId(pi.getId()).taskAssignee(username).orderByTaskCreateTime().desc().singleResult();
         return new TaskObject(to, runtimeService);

@@ -3,6 +3,7 @@ package org.prulife.com.services;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
+import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.task.api.Task;
 
 import org.flowable.task.api.history.HistoricTaskInstance;
@@ -42,13 +43,19 @@ public class TasksService {
 
 //            Users user = userRepository.findByUsername("jerome");
             runtimeService.setVariable(task.getExecutionId(), "status", "processor");
-            runtimeService.setVariable(task.getExecutionId(), "isCompleteAndValid", body.get("isCompleteAndValid"));
+            runtimeService.setVariable(task.getExecutionId(), "isBeyondLimit", body.get("isBeyondLimit"));
+            runtimeService.setVariable(task.getExecutionId(), "isBeyondLimit", body.get("isBeyondLimit"));
+            runtimeService.setVariable(task.getExecutionId(), "isSOI", body.get("isSOI"));
+            runtimeService.setVariable(task.getExecutionId(), "isFatcaTagging", body.get("isFatcaTagging"));
+            runtimeService.setVariable(task.getExecutionId(), "isWithOccupationChange", body.get("isWithOccupationChange"));
+            runtimeService.setVariable(task.getExecutionId(), "isPlaceOfSigningWithinPh", body.get("isPlaceOfSigningWithinPh"));
             runtimeService.setVariable(task.getExecutionId(), "modules", "processor");
+            runtimeService.setVariable(task.getExecutionId(), "screener", "darwinc");
             taskService.complete(taskid);
             Task t = taskService.createTaskQuery().processInstanceId(task.getProcessInstanceId()).orderByTaskCreateTime().desc().singleResult();
             t.setParentTaskId(task.getId());
-            t.setOwner((String) body.get("username"));
-            t.setAssignee((String) body.get("username"));
+//            t.setOwner((String) body.get("username"));
+//            t.setAssignee((String) body.get("username"));
             t.setCategory("processor");
             taskService.saveTask(t);
             return new TaskObject(t, runtimeService);
@@ -57,6 +64,11 @@ public class TasksService {
         }
         return null;
     }
+
+//    public TaskObject getTaskByExcutionID (String excusionID) {
+//        ProcessInstance =  runtimeService.createProcessInstanceQuery()
+//        ProcessInstance TaskObject = runtimeService.createProcessInstanceQuery()
+//    }
 
     /**
      * Completes the task of Processor

@@ -26,7 +26,7 @@ public class TaskObject {
     private String processInstanceId;
     private String executionId;
     private String category;
-
+    private String status;
     private Date claimTime;
     private Date dueDate;
     private Date startTime;
@@ -51,6 +51,7 @@ public class TaskObject {
         this.setCategory(t.getCategory());
         this.setExecutionId(t.getExecutionId());
         this.setVariables(rs.getVariables(t.getProcessInstanceId()));
+        this.setStatus(t.getName());
 
 //        Variables v = new Variables();
 //        if(rs.getVariable(t.getProcessInstanceId(), "username") != null){

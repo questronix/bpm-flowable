@@ -9,6 +9,7 @@ import org.flowable.task.api.Task;
 import org.flowable.task.api.history.HistoricTaskInstance;
 import org.prulife.com.entities.ResponseModel;
 import org.prulife.com.entities.TaskObject;
+import org.prulife.com.utilities.ResponseUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +29,87 @@ public class TasksService {
     private HistoryService historyService;
 
 
+    public ResponseModel searchService(Map<String, Object> body){
+        ResponseModel res;
+        try{
+            int page = 0, limit = 0;
+            String sby = "";
+            String sval = "";
+            if(body.containsKey("searchBy")){
+                sby = body.get("searchBy").toString();
+
+            }else{
+                sby = "";
+            }
+            if(body.containsKey("searchValue"))sval = "%" + body.get("searchValue").toString() + "%";
+
+            String username = body.get("username").toString();
+            page = (Integer) body.get("page");
+            limit = (Integer) body.get("limit");
+
+            switch (sby) {
+                case "ownerName":
+                    return searchTask("ownerName", sval, username, page, limit);
+                case "insuredName":
+                    return searchTask("insuredName", sval, username, page, limit);
+                case "policyNo":
+                    return searchTask("policyNo", sval, username, page, limit);
+                case "status":
+                    return searchTask("status", sval, username, page, limit);
+                default: return getAllTasks(username, page, limit);
+
+            }
+
+
+        } catch (Exception e) {
+            System.out.println("Error "+ e);
+            return ResponseUtility.returnFailedResponseModel();
+        }
+
+
+    }
+
+    private ResponseModel searchTask(String query, String queryValue, String username, int page, int item) throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        page = (page - 1) * item;
+        List<Task> tasks = taskService.createTaskQuery().taskAssignee(username)
+                .processVariableValueLike(query, queryValue).orderByTaskCreateTime().desc().listPage(page, item);
+        System.out.println("tasksss" + tasks);
+        List<TaskObject> list = new ArrayList<>();
+        for(Task task : tasks){
+            list.add(new TaskObject(task, runtimeService));
+        }
+        Long totalRecords = taskService.createTaskQuery().taskAssignee(username).processVariableValueLike(query, queryValue).count();
+        float ans = (float)taskService.createTaskQuery().taskAssignee(username).processVariableValueLike(query, queryValue).count() / item;
+        int pageCount = (int) Math.ceil(ans);
+        map.put("totalRecords", totalRecords);
+        map.put("pageCount", Math.ceil(ans));
+        map.put("tasks", list);
+
+        ResponseModel res = ResponseUtility.returnSuccessResponseModel();
+        res.setResult(map);
+        return res;
+
+    }
+
+    public ResponseModel getAllTasks(String username, int page, int item) {
+        ResponseModel res;
+        page = (page - 1) * item;
+        Map map = new HashMap<String, Object>();
+        List<Task> tasks = taskService.createTaskQuery().taskAssignee(username).orderByTaskCreateTime().desc().listPage(page, item);
+        List<TaskObject> list = new ArrayList<TaskObject>();
+        for(Task task : tasks){
+            list.add(new TaskObject(task, runtimeService));
+        }
+        Long totalRecords = taskService.createTaskQuery().taskAssignee(username).count();
+        float ans = (float) taskService.createTaskQuery().taskAssignee(username).count() / item;
+        map.put("totalRecords", totalRecords);
+        map.put("pageCount",  Math.ceil(ans));
+        map.put("tasks", list);
+        res = ResponseUtility.returnSuccessResponseModel();
+        res.setResult(map);
+        return res;
+    }
     /**
      * Completes the task of CSA
      * Upon completion it will create new task for Processor's evaluation
@@ -226,22 +308,6 @@ public class TasksService {
         return list;
     }
 
-    public Map<String, Object> getAllTasks(String username, int page, int item) {
-        page = (page - 1) * item;
-        Map map = new HashMap<String, Object>();
-        List<Task> tasks = taskService.createTaskQuery().taskAssignee(username).orderByTaskCreateTime().desc().listPage(page, item);
-        double ans = taskService.createTaskQuery().taskAssignee(username).count() / item;
-        int taskCount = (int) Math.round(ans);
-//        id
-        List<TaskObject> list = new ArrayList<TaskObject>();
-        for(Task task : tasks){
-            list.add(new TaskObject(task, runtimeService));
-        }
-        map.put("pageCount", taskCount);
-        map.put("tasks", list);
-
-        return map;
-    }
     public Map<String, Object> getAllTasks(String username, int page, int item, String policyNo) {
         page = (page - 1) * item;
         Map map = new HashMap<String, Object>();

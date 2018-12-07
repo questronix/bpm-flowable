@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @EnableAutoConfiguration
 @SpringBootApplication
-
+@ComponentScan({"org.prulife.com.*"})
 public class Application {
 
     public static void main(String[] args) {

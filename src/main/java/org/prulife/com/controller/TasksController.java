@@ -27,6 +27,16 @@ public class TasksController {
         return tasksService.getAllTasks(username);
     }
 
+    @CrossOrigin(origins = "http://localhost:4000")
+    @RequestMapping(value = "/searchTask", method = RequestMethod.POST, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseModel searchTask(@RequestBody Map<String, Object> body){
+
+
+        return tasksService.searchService(body);
+
+
+    }
+
     @RequestMapping(value = "/getTasksPerUser", method = RequestMethod.POST, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseModel getUserTasks(@RequestBody RequestModel body){
 
@@ -34,12 +44,6 @@ public class TasksController {
         return tasksService.getUserTasks(body.getUserId(), body.getPage(),body.getLimit());
 
 //        return null;
-    }
-
-    @GetMapping(value="/paginated", produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody
-    Map<String, Object> getAllTasksPaginated(@RequestParam("username") String username, @RequestParam(name="offset", required = false) int offset, @RequestParam(name = "max", required = false) int max){
-        return tasksService.getAllTasks(username, offset, max);
     }
 
     @GetMapping(value = "/{tid}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -98,12 +102,12 @@ public class TasksController {
         if (tasksService.completeCSAPrescreening(body.get("taskId").toString(), body)) {
             responseModel.setMessage("Success");
             responseModel.setStatus("200");
-            responseModel.setSuccess(true);
+            responseModel.setIsSuccess(true);
         }
         else {
             responseModel.setMessage("Failed");
             responseModel.setStatus("201");
-            responseModel.setSuccess(false);
+            responseModel.setIsSuccess(false);
         }
         return responseModel;
     }
@@ -115,12 +119,12 @@ public class TasksController {
         if (tasksService.completeCSAPrescreening(body.get("taskId").toString(), body)) {
             responseModel.setMessage("Success");
             responseModel.setStatus("200");
-            responseModel.setSuccess(true);
+            responseModel.setIsSuccess(true);
         }
         else {
             responseModel.setMessage("Failed");
             responseModel.setStatus("201");
-            responseModel.setSuccess(false);
+            responseModel.setIsSuccess(false);
         }
         return responseModel;
     }
@@ -132,12 +136,12 @@ public class TasksController {
         if (tasksService.completeCsaProcessing(body.get("taskId").toString())) {
             responseModel.setMessage("Success");
             responseModel.setStatus("200");
-            responseModel.setSuccess(true);
+            responseModel.setIsSuccess(true);
         }
         else {
             responseModel.setMessage("Failed");
             responseModel.setStatus("201");
-            responseModel.setSuccess(false);
+            responseModel.setIsSuccess(false);
         }
         return responseModel;
     }
@@ -149,12 +153,12 @@ public class TasksController {
       if (tasksService.completeCsaApproval(body.get("taskId").toString(), body)) {
             responseModel.setMessage("Success");
             responseModel.setStatus("200");
-            responseModel.setSuccess(true);
+            responseModel.setIsSuccess(true);
         }
         else {
             responseModel.setMessage("Failed");
             responseModel.setStatus("201");
-            responseModel.setSuccess(false);
+            responseModel.setIsSuccess(false);
         }
         return responseModel;
     }

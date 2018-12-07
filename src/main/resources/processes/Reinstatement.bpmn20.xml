@@ -1,92 +1,364 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
-  <process id="reinstatementStart" name="Reinstatement" isExecutable="true">
+  <process id="Reinstatement" name="Reinstatement" isExecutable="true">
+    <documentation>new</documentation>
     <startEvent id="flowStart" name="Start"></startEvent>
-    <userTask id="csaPrescreening" name="CSA Pre-screening" flowable:assignee="${prescreener}" flowable:candidateGroups="csa">
-
+    <userTask id="csaPrescreening" name="CCM Pre-screening" flowable:assignee="${prescreener}" flowable:candidateGroups="csa">
+      <extensionElements>
+        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+      </extensionElements>
     </userTask>
     <exclusiveGateway id="firstValidation" name="1st level validation" default="f5"></exclusiveGateway>
     <endEvent id="flowEnd" name="End"></endEvent>
-    <userTask id="csaProcessing" name="CSA Processing " flowable:assignee="${TaskAssignment.assignCsaProcessor(prescreener)}" >
+    <userTask id="csaProcessing" name="CCM Processing" flowable:assignee="${prescreener}">
       <extensionElements>
         <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
       </extensionElements>
     </userTask>
-    <userTask id="asmProcessing" name="ASM Processing" flowable:assignee="${TaskAssignment.assignAsmProcessor()}">
+    <userTask id="asmProcessing" name="ASM Processing" flowable:assignee="${TaskAssignment.assignAsmProcessor(transactionNo)}">
       <extensionElements>
         <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
       </extensionElements>
     </userTask>
-    <endEvent id="sid-737861F6-FDE5-4226-9572-28FB9A403FF3" name="End"></endEvent>
-    <sequenceFlow id="f2" name="validate" sourceRef="csaPrescreening" targetRef="firstValidation"></sequenceFlow>
+    <userTask id="csaApproval" name="CCM Approval" flowable:assignee="${unitHead}" flowable:candidateGroups="csa">
+      <extensionElements>
+        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+      </extensionElements>
+    </userTask>
+    <exclusiveGateway id="asmValidation" name="2nd level validation"></exclusiveGateway>
+    <userTask id="complianceReview" name="Compliance Review" flowable:assignee="${TaskAssignment.assignComplianceReviewer(transactionNo)}">
+      <extensionElements>
+        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+      </extensionElements>
+    </userTask>
+    <userTask id="asmApproval" name="ASM Approval" flowable:assignee="${TaskAssignment.assignAsmApprover(transactionNo, personalLimit)}">
+      <extensionElements>
+        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+      </extensionElements>
+    </userTask>
+    <userTask id="underwritingProcessing" name="Underwriting Processing" flowable:assignee="${TaskAssignment.assignUCProcessor(transactionNo)}">
+      <extensionElements>
+        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+      </extensionElements>
+    </userTask>
+    <exclusiveGateway id="asmPendingValidation" name="MID HIT or SOI?" default="sid-D1E5BAAA-2984-40AD-BB26-3FBE740C6739"></exclusiveGateway>
+    <userTask id="returnAsmPendingApplication" name="Return to ASM Processing (AML)" flowable:assignee="${asmProcessor}">
+      <extensionElements>
+        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-06CB0CC1-02E6-4891-9410-75AAD2CBBBAF" sourceRef="complianceReview" targetRef="asmPendingValidation"></sequenceFlow>
+    <sequenceFlow id="sid-3FEA9DAD-C89D-46F2-8604-58BCC3E86591" sourceRef="returnAsmPendingApplication" targetRef="asmApproval"></sequenceFlow>
+    <exclusiveGateway id="asmApprovalValidation" name="Approve Transaction?" default="sid-B9F83C29-36A2-4D1D-BD43-5AA070E65178"></exclusiveGateway>
+    <exclusiveGateway id="underwritingValidation" name="within underwriting limit?" default="sid-8F1E7D6C-E8C3-47EC-BB84-45EF657689CD"></exclusiveGateway>
+    <userTask id="underwritingApprover" name="Underwriting Approval" flowable:assignee="${TaskAssignment.assignUCApprover(transactionNo, personalLimit)}">
+      <extensionElements>
+        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+      </extensionElements>
+    </userTask>
+    <exclusiveGateway id="underwritingValidation2" name="approve?" default="sid-E6105349-196D-4FDF-89FA-7675AD546F5E"></exclusiveGateway>
+    <endEvent id="sid-609BF365-1388-4107-A4FA-353E147BAC50" name="End"></endEvent>
+    <exclusiveGateway id="csaValidation2" name="2nd level validation" default="sid-53363D89-B26E-43AF-B993-BA66DB8CD395"></exclusiveGateway>
+    <endEvent id="sid-CA40AD9A-219C-42DF-907B-87DB9DE88268" name="End"></endEvent>
     <sequenceFlow id="f1" name="request" sourceRef="flowStart" targetRef="csaPrescreening"></sequenceFlow>
-    <sequenceFlow id="f6" sourceRef="asmProcessing" targetRef="sid-737861F6-FDE5-4226-9572-28FB9A403FF3"></sequenceFlow>
-    <userTask id="csaApproval" name="CSA Approval" flowable:assignee="${TaskAssignment.assignCsaApprover(unitHead)}" flowable:candidateGroups="csa">
+    <sequenceFlow id="fPrescreeningToValidation" sourceRef="csaPrescreening" targetRef="awaitingValidation"></sequenceFlow>
+    <userTask id="awaitingReq" name="Awating Requirements" flowable:assignee="${prescreener}">
       <extensionElements>
         <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
       </extensionElements>
     </userTask>
-    <sequenceFlow id="sid-75075CEA-685E-4A51-B356-7D8F8DFB1E60" sourceRef="csaApproval" targetRef="flowEnd"></sequenceFlow>
-    <sequenceFlow id="f4" sourceRef="csaProcessing" targetRef="csaApproval"></sequenceFlow>
-    <sequenceFlow id="f5" name="1st validation failed" sourceRef="firstValidation" targetRef="asmProcessing"></sequenceFlow>
-    <sequenceFlow id="f3" name="1st validation passed" sourceRef="firstValidation" targetRef="csaProcessing">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${beyondLimit == false && hrcStr == false && cia == false && cio == false && soi == false && fatca == false && radcaa == false && pos == true }]]></conditionExpression>
+    <exclusiveGateway id="awaitingValidation" name="with req memo?" default="f2"></exclusiveGateway>
+    <sequenceFlow id="sid-5D5FECBE-C6CD-4448-9631-16A8538AEC0F" sourceRef="asmApproval" targetRef="asmApprovalValidation"></sequenceFlow>
+    <sequenceFlow id="sid-4B28DA39-C165-48CF-A310-11FA27C3E39A" name="DJ or HRC or STR" sourceRef="asmValidation" targetRef="complianceReview">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${dj == true || hrc == true || str == true }]]></conditionExpression>
     </sequenceFlow>
+    <exclusiveGateway id="sid-9CA57712-5801-42A6-9030-AD9EA0210098" name="clean case" default="sid-857C8736-D9ED-41A6-A17D-A02B5758E9AE"></exclusiveGateway>
+    <sequenceFlow id="sid-347D4334-497A-4DA8-95B5-CFA901C7699C" sourceRef="asmProcessing" targetRef="sid-9CA57712-5801-42A6-9030-AD9EA0210098"></sequenceFlow>
+    <sequenceFlow id="sid-70B29894-5A06-4AB5-96CF-65C237970DD7" name="Yes" sourceRef="asmPendingValidation" targetRef="underwritingProcessing">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${mid || soi}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-D1E5BAAA-2984-40AD-BB26-3FBE740C6739" name="No" sourceRef="asmPendingValidation" targetRef="returnAsmPendingApplication"></sequenceFlow>
+    <exclusiveGateway id="sid-8BE02870-0A6C-4DB7-BF46-7ABA79170139" default="sid-97852FF0-452D-47C8-90CA-0D5CA85A146F"></exclusiveGateway>
+    <endEvent id="sid-BC52D320-C688-4952-99C3-8CBBCF6D0FD5" name="End"></endEvent>
+    <userTask id="returnAsmProcessing" name="Return to ASM Processing (UW)" flowable:assignee="${asmProcessor}">
+      <extensionElements>
+        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+      </extensionElements>
+    </userTask>
+    <userTask id="returnAsmPendingApplication2" name="Return to ASM Processing" flowable:assignee="${asmProcessor}">
+      <extensionElements>
+        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-B9F83C29-36A2-4D1D-BD43-5AA070E65178" name="No" sourceRef="asmApprovalValidation" targetRef="returnAsmPendingApplication2"></sequenceFlow>
+    <sequenceFlow id="sid-CBE9BA22-685F-452C-9E46-158E311143BB" sourceRef="returnAsmPendingApplication2" targetRef="asmApproval"></sequenceFlow>
+    <sequenceFlow id="sid-E6105349-196D-4FDF-89FA-7675AD546F5E" name="No" sourceRef="underwritingValidation2" targetRef="sid-8BE02870-0A6C-4DB7-BF46-7ABA79170139"></sequenceFlow>
+    <sequenceFlow id="sid-7F0DC7E8-E960-4D24-B2AE-751435729222" name="declined or postponed" sourceRef="sid-8BE02870-0A6C-4DB7-BF46-7ABA79170139" targetRef="sid-BC52D320-C688-4952-99C3-8CBBCF6D0FD5">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${declinedPostponed}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-8F1E7D6C-E8C3-47EC-BB84-45EF657689CD" name="No" sourceRef="underwritingValidation" targetRef="underwritingApprover"></sequenceFlow>
+    <sequenceFlow id="sid-A1178D31-6BA5-4546-B8D6-8D353D744600" sourceRef="underwritingApprover" targetRef="underwritingValidation2"></sequenceFlow>
+    <sequenceFlow id="sid-857C8736-D9ED-41A6-A17D-A02B5758E9AE" name="Default" sourceRef="sid-9CA57712-5801-42A6-9030-AD9EA0210098" targetRef="asmValidation"></sequenceFlow>
+    <sequenceFlow id="sid-72B42415-57AF-4422-B624-F8CB043EE468" name="Yes" sourceRef="underwritingValidation" targetRef="underwritingValidation2">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${withinUnderwritingLimit}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-6E2EF39F-FA9C-43FE-8731-704F1279DB86" sourceRef="csaProcessing" targetRef="csaValidation2"></sequenceFlow>
+    <sequenceFlow id="sid-75075CEA-685E-4A51-B356-7D8F8DFB1E60" sourceRef="csaApproval" targetRef="flowEnd"></sequenceFlow>
+    <sequenceFlow id="sid-97852FF0-452D-47C8-90CA-0D5CA85A146F" name="default" sourceRef="sid-8BE02870-0A6C-4DB7-BF46-7ABA79170139" targetRef="returnAsmProcessing"></sequenceFlow>
+    <sequenceFlow id="sid-7E75B337-5F23-4CE9-96F3-B96BCC1F4A07" sourceRef="underwritingProcessing" targetRef="underwritingValidation"></sequenceFlow>
+    <sequenceFlow id="sid-FEFFE24D-F584-440F-B85E-61E01D9EF06B" name="Yes" sourceRef="asmApprovalValidation" targetRef="sid-CA40AD9A-219C-42DF-907B-87DB9DE88268">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${isApproved}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-7394BF86-98EE-4842-9361-B5EB761199C5" name="Yes" sourceRef="underwritingValidation2" targetRef="sid-609BF365-1388-4107-A4FA-353E147BAC50">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${isApproved}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-6149961F-750A-4360-8D52-7F5DAF688A0D" name="No DJ &amp; HRC &amp; STR &amp; MID &amp; SOI" sourceRef="sid-9CA57712-5801-42A6-9030-AD9EA0210098" targetRef="asmApproval">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!dj && !hrc && !str && !mid && !soi}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-1761F1B0-FDAA-449C-86E5-9348F8EE919B" sourceRef="returnAsmProcessing" targetRef="underwritingProcessing"></sequenceFlow>
+    <sequenceFlow id="sid-17A296AF-CCD5-4374-BE0D-5B4839803F31" name="with MID or SOI or beyond limit" sourceRef="asmValidation" targetRef="underwritingProcessing">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${mid || soi || beyondLimit}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-5BEC413D-C766-4C8E-9A6C-E5BB16CCE7B2" sourceRef="awaitingReq" targetRef="awaitingValidation"></sequenceFlow>
+    <sequenceFlow id="f3" name="1st validation passed" sourceRef="firstValidation" targetRef="csaProcessing">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!beyondLimit && !hrc && !str && !cia && !cio && !soi && !fatca && !radcaa && pos}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="fToAwatingReq" sourceRef="awaitingValidation" targetRef="awaitingReq">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${withRequirementMemo}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="f5" name="1st validation failed" sourceRef="firstValidation" targetRef="asmProcessing"></sequenceFlow>
+    <sequenceFlow id="sid-AD7AB221-4A01-4A9D-92F3-56BE28237F15" name="For approval" sourceRef="csaValidation2" targetRef="csaApproval">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!mid && !dj && !reinsurance && !claims && !substandard}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-53363D89-B26E-43AF-B993-BA66DB8CD395" name="default" sourceRef="csaValidation2" targetRef="asmProcessing"></sequenceFlow>
+    <sequenceFlow id="f2" name="No" sourceRef="awaitingValidation" targetRef="firstValidation"></sequenceFlow>
   </process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_reinstatementStart">
-    <bpmndi:BPMNPlane bpmnElement="reinstatementStart" id="BPMNPlane_reinstatementStart">
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Reinstatement">
+    <bpmndi:BPMNPlane bpmnElement="Reinstatement" id="BPMNPlane_Reinstatement">
       <bpmndi:BPMNShape bpmnElement="flowStart" id="BPMNShape_flowStart">
-        <omgdc:Bounds height="30.0" width="30.0" x="69.27989897092505" y="65.0"></omgdc:Bounds>
+        <omgdc:Bounds height="30.0" width="30.0" x="105.0" y="65.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="csaPrescreening" id="BPMNShape_csaPrescreening">
-        <omgdc:Bounds height="80.0" width="100.0" x="195.0" y="40.0"></omgdc:Bounds>
+        <omgdc:Bounds height="80.0" width="100.0" x="210.0" y="40.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="firstValidation" id="BPMNShape_firstValidation">
-        <omgdc:Bounds height="40.0" width="40.0" x="390.0" y="60.0"></omgdc:Bounds>
+        <omgdc:Bounds height="40.0" width="40.0" x="535.0" y="60.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="flowEnd" id="BPMNShape_flowEnd">
-        <omgdc:Bounds height="28.0" width="28.0" x="1110.0" y="66.0"></omgdc:Bounds>
+        <omgdc:Bounds height="28.0" width="28.0" x="1190.0" y="66.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="csaProcessing" id="BPMNShape_csaProcessing">
-        <omgdc:Bounds height="80.0" width="100.0" x="615.0" y="40.0"></omgdc:Bounds>
+        <omgdc:Bounds height="80.0" width="100.0" x="735.0" y="40.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="asmProcessing" id="BPMNShape_asmProcessing">
-        <omgdc:Bounds height="80.0" width="100.0" x="255.0" y="210.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="sid-737861F6-FDE5-4226-9572-28FB9A403FF3" id="BPMNShape_sid-737861F6-FDE5-4226-9572-28FB9A403FF3">
-        <omgdc:Bounds height="28.0" width="28.0" x="70.27989897092505" y="236.0"></omgdc:Bounds>
+        <omgdc:Bounds height="80.0" width="100.0" x="525.0" y="360.7407407679948"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="csaApproval" id="BPMNShape_csaApproval">
-        <omgdc:Bounds height="80.0" width="100.0" x="795.0" y="40.0"></omgdc:Bounds>
+        <omgdc:Bounds height="80.0" width="100.0" x="1050.0" y="40.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge bpmnElement="f6" id="BPMNEdge_f6">
-        <omgdi:waypoint x="255.0" y="250.0"></omgdi:waypoint>
-        <omgdi:waypoint x="98.22982132123215" y="250.0"></omgdi:waypoint>
+      <bpmndi:BPMNShape bpmnElement="asmValidation" id="BPMNShape_asmValidation">
+        <omgdc:Bounds height="40.0" width="40.0" x="805.0" y="380.7407407679948"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="complianceReview" id="BPMNShape_complianceReview">
+        <omgdc:Bounds height="80.0" width="99.99999999999989" x="975.0000000000001" y="360.7407407679948"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="asmApproval" id="BPMNShape_asmApproval">
+        <omgdc:Bounds height="80.0" width="99.99999999999989" x="975.0000000000001" y="465.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="underwritingProcessing" id="BPMNShape_underwritingProcessing">
+        <omgdc:Bounds height="80.0" width="100.0" x="975.0" y="255.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="asmPendingValidation" id="BPMNShape_asmPendingValidation">
+        <omgdc:Bounds height="40.0" width="40.0" x="1200.0" y="380.7407407679948"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="returnAsmPendingApplication" id="BPMNShape_returnAsmPendingApplication">
+        <omgdc:Bounds height="80.0" width="100.0" x="1170.0" y="465.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="asmApprovalValidation" id="BPMNShape_asmApprovalValidation">
+        <omgdc:Bounds height="40.0" width="40.0" x="948.8888862724984" y="560.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="underwritingValidation" id="BPMNShape_underwritingValidation">
+        <omgdc:Bounds height="40.0" width="40.0" x="1340.0" y="166.66666617609346"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="underwritingApprover" id="BPMNShape_underwritingApprover">
+        <omgdc:Bounds height="80.0" width="100.0" x="1310.0" y="40.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="underwritingValidation2" id="BPMNShape_underwritingValidation2">
+        <omgdc:Bounds height="40.0" width="40.0" x="1550.0" y="166.66666617609346"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-609BF365-1388-4107-A4FA-353E147BAC50" id="BPMNShape_sid-609BF365-1388-4107-A4FA-353E147BAC50">
+        <omgdc:Bounds height="28.0" width="28.0" x="1650.0" y="172.66666617609346"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="csaValidation2" id="BPMNShape_csaValidation2">
+        <omgdc:Bounds height="40.0" width="40.0" x="885.0" y="60.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-CA40AD9A-219C-42DF-907B-87DB9DE88268" id="BPMNShape_sid-CA40AD9A-219C-42DF-907B-87DB9DE88268">
+        <omgdc:Bounds height="28.0" width="28.0" x="954.8888862724984" y="645.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="awaitingReq" id="BPMNShape_awaitingReq">
+        <omgdc:Bounds height="80.0" width="100.0" x="370.0" y="195.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="awaitingValidation" id="BPMNShape_awaitingValidation">
+        <omgdc:Bounds height="40.0" width="40.0" x="400.0" y="60.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-9CA57712-5801-42A6-9030-AD9EA0210098" id="BPMNShape_sid-9CA57712-5801-42A6-9030-AD9EA0210098">
+        <omgdc:Bounds height="40.0" width="40.0" x="685.1851831683842" y="380.7407407679948"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-8BE02870-0A6C-4DB7-BF46-7ABA79170139" id="BPMNShape_sid-8BE02870-0A6C-4DB7-BF46-7ABA79170139">
+        <omgdc:Bounds height="40.0" width="40.0" x="1550.0" y="255.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-BC52D320-C688-4952-99C3-8CBBCF6D0FD5" id="BPMNShape_sid-BC52D320-C688-4952-99C3-8CBBCF6D0FD5">
+        <omgdc:Bounds height="28.0" width="28.0" x="1755.0" y="261.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="returnAsmProcessing" id="BPMNShape_returnAsmProcessing">
+        <omgdc:Bounds height="80.0" width="100.0" x="1310.0" y="235.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="returnAsmPendingApplication2" id="BPMNShape_returnAsmPendingApplication2">
+        <omgdc:Bounds height="80.0" width="100.0" x="765.0" y="540.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-B9F83C29-36A2-4D1D-BD43-5AA070E65178" id="BPMNEdge_sid-B9F83C29-36A2-4D1D-BD43-5AA070E65178">
+        <omgdi:waypoint x="949.2935472870599" y="580.4046610145709"></omgdi:waypoint>
+        <omgdi:waypoint x="864.9499999999799" y="580.0045071166115"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="sid-75075CEA-685E-4A51-B356-7D8F8DFB1E60" id="BPMNEdge_sid-75075CEA-685E-4A51-B356-7D8F8DFB1E60">
-        <omgdi:waypoint x="894.9499999999999" y="80.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1110.0" y="80.0"></omgdi:waypoint>
+      <bpmndi:BPMNEdge bpmnElement="fPrescreeningToValidation" id="BPMNEdge_fPrescreeningToValidation">
+        <omgdi:waypoint x="309.9499999999984" y="80.15560747663551"></omgdi:waypoint>
+        <omgdi:waypoint x="400.4375" y="80.4375"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-70B29894-5A06-4AB5-96CF-65C237970DD7" id="BPMNEdge_sid-70B29894-5A06-4AB5-96CF-65C237970DD7">
+        <omgdi:waypoint x="1220.5" y="381.2407407679948"></omgdi:waypoint>
+        <omgdi:waypoint x="1220.5" y="295.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1074.9499999998645" y="295.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="f1" id="BPMNEdge_f1">
-        <omgdi:waypoint x="99.22989826336841" y="80.0"></omgdi:waypoint>
-        <omgdi:waypoint x="194.999999999968" y="80.0"></omgdi:waypoint>
+        <omgdi:waypoint x="134.9499990675947" y="80.0"></omgdi:waypoint>
+        <omgdi:waypoint x="209.99999999999378" y="80.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="fToAwatingReq" id="BPMNEdge_fToAwatingReq">
+        <omgdi:waypoint x="420.43831168831167" y="99.50533744321868"></omgdi:waypoint>
+        <omgdi:waypoint x="420.12928802589" y="195.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-17A296AF-CCD5-4374-BE0D-5B4839803F31" id="BPMNEdge_sid-17A296AF-CCD5-4374-BE0D-5B4839803F31">
+        <omgdi:waypoint x="825.5" y="381.2407407679948"></omgdi:waypoint>
+        <omgdi:waypoint x="825.5" y="295.0"></omgdi:waypoint>
+        <omgdi:waypoint x="975.0" y="295.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="f2" id="BPMNEdge_f2">
-        <omgdi:waypoint x="294.9499999999978" y="80.0"></omgdi:waypoint>
-        <omgdi:waypoint x="390.0" y="80.0"></omgdi:waypoint>
+        <omgdi:waypoint x="439.4429866765175" y="80.5"></omgdi:waypoint>
+        <omgdi:waypoint x="535.5" y="80.5"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="f3" id="BPMNEdge_f3">
-        <omgdi:waypoint x="429.94608976871814" y="80.0"></omgdi:waypoint>
-        <omgdi:waypoint x="615.0" y="80.0"></omgdi:waypoint>
+        <omgdi:waypoint x="574.4872217372285" y="80.4585152838428"></omgdi:waypoint>
+        <omgdi:waypoint x="734.9999999999965" y="80.10882352941175"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="f4" id="BPMNEdge_f4">
-        <omgdi:waypoint x="714.9499999999999" y="80.0"></omgdi:waypoint>
-        <omgdi:waypoint x="795.0" y="80.0"></omgdi:waypoint>
+      <bpmndi:BPMNEdge bpmnElement="sid-6E2EF39F-FA9C-43FE-8731-704F1279DB86" id="BPMNEdge_sid-6E2EF39F-FA9C-43FE-8731-704F1279DB86">
+        <omgdi:waypoint x="834.9499999999806" y="80.0"></omgdi:waypoint>
+        <omgdi:waypoint x="860.0" y="80.0"></omgdi:waypoint>
+        <omgdi:waypoint x="885.8064516129032" y="80.80645161290323"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="f5" id="BPMNEdge_f5">
-        <omgdi:waypoint x="410.0" y="99.94413580246912"></omgdi:waypoint>
-        <omgdi:waypoint x="410.0" y="250.0"></omgdi:waypoint>
-        <omgdi:waypoint x="354.95000000000005" y="250.0"></omgdi:waypoint>
+        <omgdi:waypoint x="550.0" y="94.95"></omgdi:waypoint>
+        <omgdi:waypoint x="550.0" y="360.7407407679948"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-A1178D31-6BA5-4546-B8D6-8D353D744600" id="BPMNEdge_sid-A1178D31-6BA5-4546-B8D6-8D353D744600">
+        <omgdi:waypoint x="1409.95" y="80.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1570.5" y="80.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1570.5" y="167.16666617609346"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-AD7AB221-4A01-4A9D-92F3-56BE28237F15" id="BPMNEdge_sid-AD7AB221-4A01-4A9D-92F3-56BE28237F15">
+        <omgdi:waypoint x="924.4939335394126" y="80.45103092783505"></omgdi:waypoint>
+        <omgdi:waypoint x="1050.0" y="80.12840616966582"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-857C8736-D9ED-41A6-A17D-A02B5758E9AE" id="BPMNEdge_sid-857C8736-D9ED-41A6-A17D-A02B5758E9AE">
+        <omgdi:waypoint x="724.7068941647698" y="401.1607844102498"></omgdi:waypoint>
+        <omgdi:waypoint x="805.0834621315162" y="400.8239942441823"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-5BEC413D-C766-4C8E-9A6C-E5BB16CCE7B2" id="BPMNEdge_sid-5BEC413D-C766-4C8E-9A6C-E5BB16CCE7B2">
+        <omgdi:waypoint x="370.0" y="235.0"></omgdi:waypoint>
+        <omgdi:waypoint x="340.5" y="235.0"></omgdi:waypoint>
+        <omgdi:waypoint x="340.5" y="80.5"></omgdi:waypoint>
+        <omgdi:waypoint x="400.5" y="80.5"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-6149961F-750A-4360-8D52-7F5DAF688A0D" id="BPMNEdge_sid-6149961F-750A-4360-8D52-7F5DAF688A0D">
+        <omgdi:waypoint x="705.6851831683842" y="420.1844769943751"></omgdi:waypoint>
+        <omgdi:waypoint x="705.6851831683842" y="485.0"></omgdi:waypoint>
+        <omgdi:waypoint x="975.0000000000001" y="485.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-75075CEA-685E-4A51-B356-7D8F8DFB1E60" id="BPMNEdge_sid-75075CEA-685E-4A51-B356-7D8F8DFB1E60">
+        <omgdi:waypoint x="1149.9499999999705" y="80.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1190.0" y="80.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-7E75B337-5F23-4CE9-96F3-B96BCC1F4A07" id="BPMNEdge_sid-7E75B337-5F23-4CE9-96F3-B96BCC1F4A07">
+        <omgdi:waypoint x="1025.0" y="255.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1025.0" y="187.16666617609346"></omgdi:waypoint>
+        <omgdi:waypoint x="1340.5" y="187.16666617609346"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-D1E5BAAA-2984-40AD-BB26-3FBE740C6739" id="BPMNEdge_sid-D1E5BAAA-2984-40AD-BB26-3FBE740C6739">
+        <omgdi:waypoint x="1220.4079985652554" y="420.2732442617636"></omgdi:waypoint>
+        <omgdi:waypoint x="1220.1925129395472" y="465.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-7F0DC7E8-E960-4D24-B2AE-751435729222" id="BPMNEdge_sid-7F0DC7E8-E960-4D24-B2AE-751435729222">
+        <omgdi:waypoint x="1589.4930464411914" y="275.4520202020202"></omgdi:waypoint>
+        <omgdi:waypoint x="1755.0000405079702" y="275.0351385265543"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-1761F1B0-FDAA-449C-86E5-9348F8EE919B" id="BPMNEdge_sid-1761F1B0-FDAA-449C-86E5-9348F8EE919B">
+        <omgdi:waypoint x="1309.9999999999798" y="275.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1074.95" y="275.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-06CB0CC1-02E6-4891-9410-75AAD2CBBBAF" id="BPMNEdge_sid-06CB0CC1-02E6-4891-9410-75AAD2CBBBAF">
+        <omgdi:waypoint x="1074.95" y="400.86849012860864"></omgdi:waypoint>
+        <omgdi:waypoint x="1200.448717948718" y="401.18945871671275"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-FEFFE24D-F584-440F-B85E-61E01D9EF06B" id="BPMNEdge_sid-FEFFE24D-F584-440F-B85E-61E01D9EF06B">
+        <omgdi:waypoint x="969.2670914007035" y="599.5591869398207"></omgdi:waypoint>
+        <omgdi:waypoint x="968.9777380038274" y="645.0002791781151"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-72B42415-57AF-4422-B624-F8CB043EE468" id="BPMNEdge_sid-72B42415-57AF-4422-B624-F8CB043EE468">
+        <omgdi:waypoint x="1379.4454902426705" y="187.16666617609346"></omgdi:waypoint>
+        <omgdi:waypoint x="1550.5" y="187.16666617609346"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-347D4334-497A-4DA8-95B5-CFA901C7699C" id="BPMNEdge_sid-347D4334-497A-4DA8-95B5-CFA901C7699C">
+        <omgdi:waypoint x="624.9499999999839" y="400.9318488905416"></omgdi:waypoint>
+        <omgdi:waypoint x="685.6083695114332" y="401.1639271110438"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-4B28DA39-C165-48CF-A310-11FA27C3E39A" id="BPMNEdge_sid-4B28DA39-C165-48CF-A310-11FA27C3E39A">
+        <omgdi:waypoint x="844.4928302360622" y="401.1930020745274"></omgdi:waypoint>
+        <omgdi:waypoint x="975.0000000000001" y="400.86592873791966"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-E6105349-196D-4FDF-89FA-7675AD546F5E" id="BPMNEdge_sid-E6105349-196D-4FDF-89FA-7675AD546F5E">
+        <omgdi:waypoint x="1570.5" y="206.10595189043863"></omgdi:waypoint>
+        <omgdi:waypoint x="1570.5" y="255.5"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-8F1E7D6C-E8C3-47EC-BB84-45EF657689CD" id="BPMNEdge_sid-8F1E7D6C-E8C3-47EC-BB84-45EF657689CD">
+        <omgdi:waypoint x="1360.406249999569" y="167.07291617566227"></omgdi:waypoint>
+        <omgdi:waypoint x="1360.1863919137616" y="119.95"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-97852FF0-452D-47C8-90CA-0D5CA85A146F" id="BPMNEdge_sid-97852FF0-452D-47C8-90CA-0D5CA85A146F">
+        <omgdi:waypoint x="1550.5" y="275.5"></omgdi:waypoint>
+        <omgdi:waypoint x="1409.95" y="275.5"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-7394BF86-98EE-4842-9361-B5EB761199C5" id="BPMNEdge_sid-7394BF86-98EE-4842-9361-B5EB761199C5">
+        <omgdi:waypoint x="1589.5415950590664" y="187.06451563845906"></omgdi:waypoint>
+        <omgdi:waypoint x="1650.0001933764247" y="186.74126421303217"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-5D5FECBE-C6CD-4448-9631-16A8538AEC0F" id="BPMNEdge_sid-5D5FECBE-C6CD-4448-9631-16A8538AEC0F">
+        <omgdi:waypoint x="1025.0" y="544.95"></omgdi:waypoint>
+        <omgdi:waypoint x="1025.0" y="580.0"></omgdi:waypoint>
+        <omgdi:waypoint x="988.8066059701432" y="580.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-3FEA9DAD-C89D-46F2-8604-58BCC3E86591" id="BPMNEdge_sid-3FEA9DAD-C89D-46F2-8604-58BCC3E86591">
+        <omgdi:waypoint x="1169.9999999999852" y="505.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1074.9499999998116" y="505.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-CBE9BA22-685F-452C-9E46-158E311143BB" id="BPMNEdge_sid-CBE9BA22-685F-452C-9E46-158E311143BB">
+        <omgdi:waypoint x="815.0" y="540.0"></omgdi:waypoint>
+        <omgdi:waypoint x="815.0" y="505.0"></omgdi:waypoint>
+        <omgdi:waypoint x="974.9999999998776" y="505.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-53363D89-B26E-43AF-B993-BA66DB8CD395" id="BPMNEdge_sid-53363D89-B26E-43AF-B993-BA66DB8CD395">
+        <omgdi:waypoint x="905.5" y="99.43809673366833"></omgdi:waypoint>
+        <omgdi:waypoint x="905.5" y="160.0"></omgdi:waypoint>
+        <omgdi:waypoint x="575.0" y="160.0"></omgdi:waypoint>
+        <omgdi:waypoint x="575.0" y="360.7407407679948"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
